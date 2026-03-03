@@ -1,4 +1,4 @@
-.PHONY: all build build-debug test test-unit lint lint-fmt lint-clippy bench clean install
+.PHONY: all build build-debug test test-unit test-bridge lint lint-fmt lint-clippy bench clean install
 
 all: build
 
@@ -8,10 +8,13 @@ build:
 build-debug:
 	cargo build --workspace
 
-test: test-unit
+test: test-unit test-bridge
 
 test-unit:
-	cargo test --workspace
+	cargo test --lib
+
+test-bridge:
+	cargo test --test "reality*"
 
 lint: lint-fmt lint-clippy
 
@@ -22,10 +25,10 @@ lint-clippy:
 	cargo clippy --workspace --all-targets -- -D warnings
 
 bench:
-	cargo bench -p agentic-reality
+	cargo bench
 
 clean:
 	cargo clean
 
 install:
-	cargo install --path crates/agentic-reality-cli
+	cargo install --path crates/agentic-reality-mcp
