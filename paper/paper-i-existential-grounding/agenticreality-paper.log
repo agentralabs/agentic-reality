@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025/Homebrew) (preloaded format=pdflatex 2026.1.29)  2 MAR 2026 22:00
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025/Homebrew) (preloaded format=pdflatex 2026.1.29)  2 MAR 2026 22:08
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1222,11 +1222,6 @@ dmap/pdftex.map}
 per/cm-super-ts1.enc}]
 
 
-Overfull \hbox (89.40369pt too wide) in paragraph at lines 254--255
- [][] 
- []
-
-
 Underfull \hbox (badness 1348) in paragraph at lines 277--278
 []|\OT1/cmr/m/n/7 (+20) Perception, Re-al-ity An-chors,
  []
@@ -1241,38 +1236,30 @@ Underfull \hbox (badness 1348) in paragraph at lines 277--278
 LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <12> not available
 (Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 309.
 LaTeX Font Info:    Trying to load font information for OMS+cmr on input line 3
-45.
+54.
 
 (/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/base/omscmr
 .fd
 File: omscmr.fd 2024/11/19 v2.5n Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <5> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 345.
-
-Overfull \hbox (15.30023pt too wide) in paragraph at lines 352--353
- [][] 
- []
-
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 354.
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 353.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 367.
 
 
 
-
-[4]
-Underfull \hbox (badness 3354) in paragraph at lines 435--435
+Underfull \hbox (badness 3354) in paragraph at lines 437--437
 \OT1/cmr/m/n/10 (+20) ARM64, 64GB RAM, ma-cOS 26.3, Rust 1.90.0,
  []
 
-Package pgfplots info on input line 494: Using 'lua backend=false' for axis: ym
+Package pgfplots info on input line 496: Using 'lua backend=false' for axis: ym
 ode=log unsupported (yet).
-Package pgfplots info on input line 494: Using 'lua backend=false' for axis: x 
+Package pgfplots info on input line 496: Using 'lua backend=false' for axis: x 
 coord trafo unsupported.
 
 
-
-Underfull \vbox (badness 1867) has occurred while \output is active []
+[4]
 
 
 
@@ -1369,11 +1356,11 @@ Package rerunfilecheck Info: File `agenticreality-paper.out' has not changed.
 (rerunfilecheck)             Checksum: 66F1F61C368062CA6B3A3B67CA30F6D0;2299.
  ) 
 Here is how much of TeX's memory you used:
- 39221 strings out of 473190
- 896629 string characters out of 5704335
- 1422419 words of memory out of 5000000
+ 39219 strings out of 473190
+ 896565 string characters out of 5704335
+ 1432811 words of memory out of 5000000
  61560 multiletter control sequences out of 15000+600000
- 578008 words of font info for 204 fonts, out of 8000000 for 9000
+ 578125 words of font info for 204 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,13n,91p,1017b,2355s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/
@@ -1384,29 +1371,30 @@ Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7
 .pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/publ
 ic/amsfonts/cm/cmbx9.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-d
 ist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></opt/homebrew/Cellar/texlive/202
-50308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></opt/homebre
+50308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></opt/homebre
+w/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmm
+i7.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/pu
+blic/amsfonts/cm/cmr10.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf
+-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></opt/homebrew/Cellar/texlive/20
+250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></opt/homebre
 w/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr
-10.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/pu
-blic/amsfonts/cm/cmr12.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf
--dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></opt/homebrew/Cellar/texlive/202
-50308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></opt/homebrew
-/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9
-.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/publ
-ic/amsfonts/cm/cmsy10.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-
-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></opt/homebrew/Cellar/texlive/202
-50308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></opt/homebr
-ew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cm
-ti9.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/p
-ublic/amsfonts/cm/cmtt10.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/tex
-mf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></opt/homebrew/Cellar/texlive
-/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt8.pfb></opt/hom
-ebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/cm-super/sf
-rm0700.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type
-1/public/cm-super/sfrm1000.pfb>
-Output written on agenticreality-paper.pdf (8 pages, 329576 bytes).
+7.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/pub
+lic/amsfonts/cm/cmr9.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></opt/homebrew/Cellar/texlive/202
+50308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></opt/homebre
+w/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmt
+i10.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/p
+ublic/amsfonts/cm/cmti9.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></opt/homebrew/Cellar/texlive/
+20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></opt/hom
+ebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm
+/cmtt8.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type
+1/public/cm-super/sfrm0700.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/t
+exmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb>
+Output written on agenticreality-paper.pdf (8 pages, 340526 bytes).
 PDF statistics:
- 344 PDF objects out of 1000 (max. 8388607)
- 289 compressed objects within 3 object streams
+ 349 PDF objects out of 1000 (max. 8388607)
+ 292 compressed objects within 3 object streams
  72 named destinations out of 1000 (max. 500000)
- 42645 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 43157 words of extra memory for PDF output out of 51595 (max. 10000000)
 

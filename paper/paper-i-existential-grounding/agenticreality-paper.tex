@@ -211,45 +211,45 @@ AgenticReality is organized as a layered architecture with seven reality domains
 \centering
 \begin{tikzpicture}[
   every node/.style={font=\scriptsize},
-  domainbox/.style={rectangle, rounded corners=4pt, draw=#1, fill=#1!12, minimum width=\columnwidth-0.8cm, minimum height=0.55cm, font=\scriptsize\bfseries, align=center, thick},
-  inventionlabel/.style={font=\tiny, text=argray, align=left},
+  domainbox/.style={rectangle, rounded corners=3pt, draw=#1, fill=#1!12, minimum width=5.2cm, minimum height=0.45cm, font=\tiny\bfseries, align=center, thick},
+  inventionlabel/.style={font=\tiny, text=argray, align=right},
 ]
 
-% Stacked domain layers (bottom to top)
+% Stacked domain layers (bottom to top), compact spacing
 \node[domainbox=ardarkblue] (d7) at (0, 0) {7. Coherence Maintenance};
-\node[inventionlabel, right] at (3.0, 0) {2 inv.};
+\node[inventionlabel] at (3.3, 0) {2 inv.};
 
-\node[domainbox=arred] (d6) at (0, 0.85) {6. Stakes Perception};
-\node[inventionlabel, right] at (3.0, 0.85) {3 inv.};
+\node[domainbox=arred] (d6) at (0, 0.7) {6. Stakes Perception};
+\node[inventionlabel] at (3.3, 0.7) {3 inv.};
 
-\node[domainbox=argreen] (d5) at (0, 1.70) {5. Temporal Grounding};
-\node[inventionlabel, right] at (3.0, 1.70) {3 inv.};
+\node[domainbox=argreen] (d5) at (0, 1.4) {5. Temporal Grounding};
+\node[inventionlabel] at (3.3, 1.4) {3 inv.};
 
-\node[domainbox=arpurple] (d4) at (0, 2.55) {4. Topology Awareness};
-\node[inventionlabel, right] at (3.0, 2.55) {4 inv.};
+\node[domainbox=arpurple] (d4) at (0, 2.1) {4. Topology Awareness};
+\node[inventionlabel] at (3.3, 2.1) {4 inv.};
 
-\node[domainbox=arblue] (d3) at (0, 3.40) {3. Reality Physics};
-\node[inventionlabel, right] at (3.0, 3.40) {4 inv.};
+\node[domainbox=arblue] (d3) at (0, 2.8) {3. Reality Physics};
+\node[inventionlabel] at (3.3, 2.8) {4 inv.};
 
-\node[domainbox=arteal] (d2) at (0, 4.25) {2. Resource Proprioception};
-\node[inventionlabel, right] at (3.0, 4.25) {5 inv.};
+\node[domainbox=arteal] (d2) at (0, 3.5) {2. Resource Proprioception};
+\node[inventionlabel] at (3.3, 3.5) {5 inv.};
 
-\node[domainbox=arorange] (d1) at (0, 5.10) {1. Deployment Consciousness};
-\node[inventionlabel, right] at (3.0, 5.10) {5 inv.};
+\node[domainbox=arorange] (d1) at (0, 4.2) {1. Deployment Consciousness};
+\node[inventionlabel] at (3.3, 4.2) {5 inv.};
 
 % Engine box at top
-\node[rectangle, rounded corners=5pt, draw=argray, fill=argray!8, minimum width=\columnwidth-0.4cm, minimum height=0.65cm, font=\scriptsize\bfseries, thick] (engine) at (0, 6.15) {RealityEngine};
+\node[rectangle, rounded corners=4pt, draw=argray, fill=argray!8, minimum width=5.5cm, minimum height=0.5cm, font=\scriptsize\bfseries, thick] (engine) at (0, 5.1) {RealityEngine};
 
 % Arrows from engine down
 \draw[-{Stealth}, argray, thick] (engine.south) -- (d1.north);
 
 % Persistence at bottom
-\node[rectangle, rounded corners=3pt, draw=argray, dashed, minimum width=\columnwidth-0.4cm, minimum height=0.5cm, font=\scriptsize, thick] (storage) at (0, -0.85) {\texttt{.areal} binary format (BLAKE3 + LZ4)};
+\node[rectangle, rounded corners=3pt, draw=argray, dashed, minimum width=5.5cm, minimum height=0.4cm, font=\tiny, thick] (storage) at (0, -0.7) {\texttt{.areal} binary format (BLAKE3 + LZ4)};
 \draw[-{Stealth}, argray, dashed] (d7.south) -- (storage.north);
 
-% MCP on the side
-\node[rectangle, rounded corners=3pt, draw=arblue, fill=arblue!8, minimum width=1.4cm, minimum height=0.5cm, font=\tiny\bfseries, thick, rotate=90] (mcp) at (-3.8, 3.0) {15 MCP Tools};
-\draw[-{Stealth}, arblue, thick] (mcp.south) -- ([xshift=-3.5cm]engine.west);
+% MCP label on left, within column bounds
+\node[font=\tiny\bfseries, text=arblue, rotate=90] (mcp) at (-3.2, 2.5) {15 MCP Tools};
+\draw[-{Stealth}, arblue, thick] (-3.0, 4.0) -- (engine.west);
 
 \end{tikzpicture}
 \caption{AgenticReality architecture. Seven reality domains are arranged as layered tiers, managed by the central RealityEngine, persisted in the \texttt{.areal} binary format, and exposed through 15~MCP tools.}
@@ -314,9 +314,10 @@ AgenticReality persists grounding state in the \texttt{.areal} binary format, de
 % Figure 3: .areal file format layout
 \begin{figure}[t]
 \centering
+\resizebox{\columnwidth}{!}{%
 \begin{tikzpicture}[
   every node/.style={font=\scriptsize},
-  block/.style={rectangle, draw=argray, minimum width=\columnwidth-1.0cm, minimum height=0.6cm, thick, align=center},
+  block/.style={rectangle, draw=argray, minimum width=6.0cm, minimum height=0.6cm, thick, align=center},
 ]
 
 % Header
@@ -349,8 +350,9 @@ AgenticReality persists grounding state in the \texttt{.areal} binary format, de
 \draw[{Stealth}-{Stealth}, argray] (-3.2, 0.3) -- (-3.2, -0.3) node[midway, left, font=\tiny] {256B};
 \draw[{Stealth}-{Stealth}, argray] (-3.2, -4.5) -- (-3.2, -5.1) node[midway, left, font=\tiny] {64B};
 
-\end{tikzpicture}
-\caption{The \texttt{.areal} binary format layout. A 256-byte header contains the ``REAL'' magic, version, flags, and incarnation ID. The section table indexes 9~section types, each with per-section BLAKE3 checksums. A 64-byte footer with ``REALEND\textbackslash 0'' magic provides format validation. LZ4 compression is optionally applied to section payloads.}
+\end{tikzpicture}%
+}
+\caption{The \texttt{.areal} binary format. Header (256\,B) with ``REAL'' magic, version, flags, incarnation ID. Section table indexes 9 types with per-section BLAKE3 checksums. Footer (64\,B) with ``REALEND'' magic. LZ4 compression per section.}
 \label{fig:format}
 \end{figure}
 
@@ -461,48 +463,48 @@ Table~\ref{tab:benchmarks} reports the results across 10~measured operations spa
 \begin{tikzpicture}
 \begin{axis}[
   width=\columnwidth,
-  height=6.0cm,
+  height=6.5cm,
   ybar,
-  bar width=8pt,
+  bar width=7pt,
   xlabel={},
   ylabel={Latency (\textmu{}s)},
   ymode=log,
   log basis y=10,
   symbolic x coords={
-    create\_engine,
-    init\_soul,
+    create,
+    init,
     get\_soul,
-    ctx\_summary,
-    add\_anchor,
-    get\_anchors,
-    set\_stakes,
-    is\_coherent,
-    save\_10K,
-    load\_10K
+    summary,
+    add\_anc,
+    get\_anc,
+    stakes,
+    cohere,
+    save,
+    load
   },
   xtick=data,
-  xticklabel style={rotate=45, anchor=east, font=\tiny},
+  xticklabel style={rotate=55, anchor=east, font=\tiny},
   ytick={0.01, 0.1, 1, 10, 100, 1000, 10000},
   yticklabels={0.01, 0.1, 1, 10, 100, 1K, 10K},
   ymin=0.005,
-  ymax=15000,
+  ymax=20000,
   grid=major,
-  grid style={argray!20},
+  grid style={argray!15},
   nodes near coords,
-  every node near coord/.append style={font=\tiny, anchor=south, rotate=0},
+  every node near coord/.append style={font=\tiny, anchor=south},
   point meta=explicit symbolic,
 ]
 \addplot[fill=arblue!70, draw=arblue] coordinates {
-  (create\_engine, 0.08) [0.08]
-  (init\_soul, 0.03) [0.03]
-  (get\_soul, 0.005) [{<}0.01]
-  (ctx\_summary, 0.14) [0.14]
-  (add\_anchor, 0.97) [0.97]
-  (get\_anchors, 0.005) [{<}0.01]
-  (set\_stakes, 0.01) [0.01]
-  (is\_coherent, 0.005) [{<}0.01]
-  (save\_10K, 4510) [4.5ms]
-  (load\_10K, 3350) [3.4ms]
+  (create, 0.08) [0.08]
+  (init, 0.03) [0.03]
+  (get\_soul, 0.008) [{$<$}0.01]
+  (summary, 0.14) [0.14]
+  (add\_anc, 0.97) [0.97]
+  (get\_anc, 0.008) [{$<$}0.01]
+  (stakes, 0.01) [0.01]
+  (cohere, 0.008) [{$<$}0.01]
+  (save, 4510) [4.5ms]
+  (load, 3350) [3.4ms]
 };
 \end{axis}
 \end{tikzpicture}
@@ -535,14 +537,16 @@ The implementation includes 314~passing tests across all four crates. Table~\ref
 \toprule
 \textbf{Phase} & \textbf{Coverage Area} & \textbf{Tests} \\
 \midrule
-Phase 1 & Core types, engine creation, soul lifecycle & 52 \\
-Phase 2 & Resource proprioception, environment sensing & 48 \\
-Phase 3 & Reality physics, anchors, freshness & 45 \\
-Phase 4 & Topology, temporal grounding, causality & 42 \\
-Phase 5 & Stakes perception, risk field, blast radius & 38 \\
-Phase 6 & Coherence engine, transition manager & 35 \\
-Phase 7 & MCP tools, JSON-RPC transport & 30 \\
-Phase 8 & .areal format, persistence, integrity & 24 \\
+Core unit & IDs, types, inline tests & 4 \\
+Phase 1 & Type system, serialization & 51 \\
+Phase 2 & Write/query engine, all 7 domains & 33 \\
+Phase 3 & .areal format, header, footer, roundtrip & 10 \\
+Phase 4 & McpValidator, strict input validation & 19 \\
+Phase 5--7 & Inventions, bridges, security & 30 \\
+Phase 8 & Stress, edge cases, multi-engine & 31 \\
+Phase 9 & FFI, constants, defaults & 8 \\
+MCP unit & Protocol, config, session, types & 61 \\
+MCP integ. & Tool calls, protocol, errors, hardening & 67 \\
 \midrule
 \multicolumn{2}{@{}l}{\textbf{Total}} & \textbf{314} \\
 \bottomrule
