@@ -1,0 +1,76 @@
+<svg viewBox="0 0 700 480" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="mindGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#2b6cb0"/>
+      <stop offset="100%" style="stop-color:#3182ce"/>
+    </linearGradient>
+    <linearGradient id="energyGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#c05621"/>
+      <stop offset="100%" style="stop-color:#dd6b20"/>
+    </linearGradient>
+    <linearGradient id="reachGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#276749"/>
+      <stop offset="100%" style="stop-color:#38a169"/>
+    </linearGradient>
+    <linearGradient id="storGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#6b46c1"/>
+      <stop offset="100%" style="stop-color:#805ad5"/>
+    </linearGradient>
+    <linearGradient id="visGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#b7791f"/>
+      <stop offset="100%" style="stop-color:#d69e2e"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Title -->
+  <text x="350" y="30" text-anchor="middle" font-size="20" font-weight="bold" fill="#1a365d">Resource Body Schema</text>
+  <text x="350" y="50" text-anchor="middle" font-size="12" fill="#718096">Resources are FELT, not queried -- proprioception for computation</text>
+
+  <!-- Mind (Memory) -->
+  <rect x="30" y="75" width="300" height="80" rx="8" fill="url(#mindGrad)"/>
+  <text x="180" y="100" text-anchor="middle" font-size="14" fill="white" font-weight="bold">MIND (Memory)</text>
+  <text x="50" y="120" font-size="9" fill="#bee3f8">Clear &lt;30%  |  Active 30-60%  |  Crowded 60-80%</text>
+  <text x="50" y="135" font-size="9" fill="#bee3f8">Strained 80-90%  |  Overwhelmed 90-95%  |  Drowning &gt;95%</text>
+  <!-- Meter bar -->
+  <rect x="50" y="142" width="260" height="6" rx="3" fill="#1a365d"/>
+  <rect x="50" y="142" width="100" height="6" rx="3" fill="#63b3ed"/>
+
+  <!-- Energy (CPU) -->
+  <rect x="370" y="75" width="300" height="80" rx="8" fill="url(#energyGrad)"/>
+  <text x="520" y="100" text-anchor="middle" font-size="14" fill="white" font-weight="bold">ENERGY (CPU)</text>
+  <text x="390" y="120" font-size="9" fill="#feebc8">Vigorous &lt;30%  |  Steady 30-50%  |  Busy 50-70%</text>
+  <text x="390" y="135" font-size="9" fill="#feebc8">Strained 70-85%  |  Depleted 85-95%  |  Constrained &gt;95%</text>
+  <rect x="390" y="142" width="260" height="6" rx="3" fill="#7b341e"/>
+  <rect x="390" y="142" width="75" height="6" rx="3" fill="#ed8936"/>
+
+  <!-- Reach (Network) -->
+  <rect x="30" y="175" width="300" height="80" rx="8" fill="url(#reachGrad)"/>
+  <text x="180" y="200" text-anchor="middle" font-size="14" fill="white" font-weight="bold">REACH (Network)</text>
+  <text x="50" y="220" font-size="9" fill="#c6f6d5">Connected  |  Normal  |  Sluggish</text>
+  <text x="50" y="235" font-size="9" fill="#c6f6d5">Constrained  |  Isolated  |  Partitioned</text>
+  <rect x="50" y="242" width="260" height="6" rx="3" fill="#1c4532"/>
+  <rect x="50" y="242" width="220" height="6" rx="3" fill="#68d391"/>
+
+  <!-- Storage -->
+  <rect x="370" y="175" width="300" height="80" rx="8" fill="url(#storGrad)"/>
+  <text x="520" y="200" text-anchor="middle" font-size="14" fill="white" font-weight="bold">STORAGE (Disk)</text>
+  <text x="390" y="220" font-size="9" fill="#e9d8fd">Clear  |  Active  |  Filling</text>
+  <text x="390" y="235" font-size="9" fill="#e9d8fd">Crowded  |  Critical  |  Full</text>
+  <rect x="390" y="242" width="260" height="6" rx="3" fill="#44337a"/>
+  <rect x="390" y="242" width="60" height="6" rx="3" fill="#b794f4"/>
+
+  <!-- Visual (GPU) - optional -->
+  <rect x="200" y="275" width="300" height="55" rx="8" fill="url(#visGrad)" stroke="#d69e2e" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="350" y="300" text-anchor="middle" font-size="14" fill="white" font-weight="bold">VISUAL (GPU) -- optional</text>
+  <text x="350" y="318" text-anchor="middle" font-size="9" fill="#fefcbf">VRAM | Compute Units | Temperature</text>
+
+  <!-- Pressure Gradient -->
+  <rect x="30" y="350" width="640" height="55" rx="8" fill="#2d3748"/>
+  <text x="350" y="372" text-anchor="middle" font-size="13" fill="white" font-weight="bold">PRESSURE GRADIENT</text>
+  <text x="350" y="392" text-anchor="middle" font-size="10" fill="#a0aec0">Current Bottleneck | Pressure Flow | Building | Releasing | Predicted Next Bottleneck</text>
+
+  <!-- Sensations -->
+  <rect x="30" y="420" width="640" height="50" rx="8" fill="#1a202c" stroke="#4a5568" stroke-width="1"/>
+  <text x="350" y="442" text-anchor="middle" font-size="13" fill="white" font-weight="bold">SENSATIONS</text>
+  <text x="350" y="458" text-anchor="middle" font-size="10" fill="#718096">Comfort | Pressure | Pain | Relief | Alarm | Numbness -- with intensity (0-1) and trend</text>
+</svg>

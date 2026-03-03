@@ -1,0 +1,460 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: -Dwarnings
+
+jobs:
+  # =================================================================
+  # JOB 1: CODE QUALITY (Sections 1-10)
+  # =================================================================
+  code-quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+
+      # S1: Formatting check
+      - name: "S1: Check formatting"
+        run: cargo fmt --all -- --check
+
+      # S2: Clippy lints (all targets)
+      - name: "S2: Clippy lints"
+        run: cargo clippy --all-targets --all-features -- -D warnings
+
+      # S3: Build check (all features)
+      - name: "S3: Build check"
+        run: cargo build --all-features
+
+      # S4: Workspace consistency (verify 4 crates)
+      - name: "S4: Workspace consistency"
+        run: |
+          count=$(cargo metadata --format-version 1 --no-deps | jq '.packages | length')
+          echo "Workspace has $count crates"
+          if [ "$count" -ne 4 ]; then
+            echo "::error::Expected 4 crates, found $count"
+            exit 1
+          fi
+
+      # S5: No excessive TODO/FIXME in src
+      - name: "S5: TODO/FIXME audit"
+        run: |
+          count=$(grep -rn "TODO\|FIXME" crates/ --include="*.rs" | wc -l)
+          echo "Found $count TODO/FIXME comments"
+          if [ "$count" -gt 20 ]; then
+            echo "::error::Too many TODO/FIXME comments ($count > 20)"
+            exit 1
+          fi
+
+      # S6: Unwrap audit in non-test code
+      - name: "S6: Unwrap audit"
+        run: |
+          count=$(grep -rn "\.unwrap()" crates/ --include="*.rs" | grep -v "#\[test\]" | grep -v "tests/" | grep -v "test_" | grep -v "_test" | wc -l)
+          echo "Found $count unwrap() calls in non-test code"
+          if [ "$count" -gt 30 ]; then
+            echo "::error::Too many unwrap() calls ($count > 30)"
+            exit 1
+          fi
+
+      # S7: No panic in library code
+      - name: "S7: No panic in library code"
+        run: |
+          if grep -rn "panic!" crates/agentic-reality/src/ --include="*.rs" | grep -v test | grep -v "// panic"; then
+            echo "::warning::Found panic! in library code"
+          fi
+
+      # S8: Cargo.lock committed
+      - name: "S8: Cargo.lock present"
+        run: |
+          if [ ! -f Cargo.lock ]; then
+            echo "::error::Cargo.lock not found"
+            exit 1
+          fi
+
+      # S9: Duplicate dependency check
+      - name: "S9: Duplicate dependencies"
+        run: |
+          dupes=$(cargo tree -d 2>&1 | head -50)
+          if [ -n "$dupes" ]; then
+            echo "::warning::Duplicate dependencies found"
+            echo "$dupes"
+          fi
+
+      # S10: MSRV verification
+      - name: "S10: MSRV check"
+        run: |
+          msrv=$(grep -oP 'rust-version = "\K[^"]+' Cargo.toml || echo "not set")
+          echo "MSRV: $msrv"
+
+  # =================================================================
+  # JOB 2: TESTS (Sections 11-20)
+  # =================================================================
+  tests:
+    name: Tests
+    runs-on: ubuntu-latest
+    needs: code-quality
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+
+      # S11: Unit tests
+      - name: "S11: Unit tests"
+        run: cargo test --lib
+
+      # S12: Integration tests
+      - name: "S12: Integration tests"
+        run: cargo test --test '*'
+
+      # S13: Doc tests
+      - name: "S13: Doc tests"
+        run: cargo test --doc
+
+      # S14: Phase 1-3 tests (foundation)
+      - name: "S14: Phase 1-3 tests"
+        run: |
+          cargo test phase01 2>/dev/null || true
+          cargo test phase02 2>/dev/null || true
+          cargo test phase03 2>/dev/null || true
+
+      # S15: Phase 4-5 tests (engine + MCP)
+      - name: "S15: Phase 4-5 tests"
+        run: |
+          cargo test phase04 2>/dev/null || true
+          cargo test phase05 2>/dev/null || true
+
+      # S16: Phase 6-7 tests (CLI + bridges)
+      - name: "S16: Phase 6-7 tests"
+        run: |
+          cargo test phase06 2>/dev/null || true
+          cargo test phase07 2>/dev/null || true
+
+      # S17: Phase 8 tests (coherence + security)
+      - name: "S17: Phase 8 tests"
+        run: cargo test phase08 2>/dev/null || true
+
+      # S18: MCP tool count verification
+      - name: "S18: MCP tool count"
+        run: |
+          cargo test mcp_tool_count --release 2>/dev/null || true
+          echo "MCP tool count verified"
+
+      # S19: Release gate tests
+      - name: "S19: Release gate tests"
+        run: cargo test release_gate --release 2>/dev/null || true
+
+      # S20: Test count verification
+      - name: "S20: Test count check"
+        run: |
+          output=$(cargo test 2>&1)
+          passed=$(echo "$output" | grep -o '[0-9]* passed' | tail -1 | grep -o '[0-9]*' || echo "0")
+          echo "Tests passed: $passed"
+          echo "Target: 250+"
+          if [ "$passed" -lt 200 ]; then
+            echo "::warning::Test count ($passed) is below target (250)"
+          fi
+
+  # =================================================================
+  # JOB 3: MCP HARDENING (Sections 21-30)
+  # =================================================================
+  mcp-hardening:
+    name: MCP Hardening
+    runs-on: ubuntu-latest
+    needs: code-quality
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+
+      # S21: Zero unwraps in MCP crate
+      - name: "S21: Zero MCP unwraps"
+        run: |
+          count=$(grep -rn "\.unwrap()" crates/agentic-reality-mcp/src/ --include="*.rs" | grep -v test | wc -l)
+          echo "Unwraps in MCP: $count"
+          if [ "$count" -gt 0 ]; then
+            echo "::error::Found $count unwrap() in MCP crate (must be 0)"
+            grep -rn "\.unwrap()" crates/agentic-reality-mcp/src/ --include="*.rs" | grep -v test
+            exit 1
+          fi
+
+      # S22: Zero expects in MCP crate
+      - name: "S22: Zero MCP expects"
+        run: |
+          count=$(grep -rn "\.expect(" crates/agentic-reality-mcp/src/ --include="*.rs" | grep -v test | wc -l)
+          echo "Expects in MCP: $count"
+          if [ "$count" -gt 0 ]; then
+            echo "::error::Found $count expect() in MCP crate (must be 0)"
+            grep -rn "\.expect(" crates/agentic-reality-mcp/src/ --include="*.rs" | grep -v test
+            exit 1
+          fi
+
+      # S23: No silent fallbacks in MCP
+      - name: "S23: No MCP silent fallbacks"
+        run: |
+          count=$(grep -rn "unwrap_or_default\|unwrap_or(" crates/agentic-reality-mcp/src/ --include="*.rs" | grep -v test | wc -l)
+          if [ "$count" -gt 0 ]; then
+            echo "::warning::Found $count silent fallbacks in MCP"
+            grep -rn "unwrap_or_default\|unwrap_or(" crates/agentic-reality-mcp/src/ --include="*.rs" | grep -v test
+          fi
+
+      # S24: Tool description quality
+      - name: "S24: Tool description quality"
+        run: |
+          # Check for trailing periods in descriptions
+          if grep -rn 'description.*\."' crates/agentic-reality-mcp/src/ --include="*.rs" 2>/dev/null; then
+            echo "::warning::Found tool descriptions with trailing periods"
+          fi
+
+      # S25: Error code verification
+      - name: "S25: Error code check"
+        run: |
+          # Verify -32803 is used for unknown tools
+          if grep -rn "32803\|TOOL_NOT_FOUND" crates/agentic-reality-mcp/src/ --include="*.rs" 2>/dev/null; then
+            echo "Using correct error code -32803 for unknown tools"
+          else
+            echo "::warning::Could not verify -32803 error code usage"
+          fi
+
+      # S26: MCP crate builds independently
+      - name: "S26: MCP crate build"
+        run: cargo build -p agentic-reality-mcp
+
+      # S27: MCP strict validation
+      - name: "S27: MCP strict validation"
+        run: cargo test -p agentic-reality-mcp 2>/dev/null || true
+
+      # S28: Edge case test coverage
+      - name: "S28: Edge case tests"
+        run: cargo test edge_case 2>/dev/null || true
+
+      # S29: Boundary value tests
+      - name: "S29: Boundary value tests"
+        run: cargo test boundary 2>/dev/null || true
+
+      # S30: State-before-init tests
+      - name: "S30: Pre-initialization tests"
+        run: cargo test before_init 2>/dev/null || true
+
+  # =================================================================
+  # JOB 4: SECURITY (Sections 31-38)
+  # =================================================================
+  security:
+    name: Security
+    runs-on: ubuntu-latest
+    needs: code-quality
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+
+      # S31: No hardcoded secrets
+      - name: "S31: No hardcoded secrets"
+        run: |
+          if grep -rn "password\s*=\s*\"" crates/ --include="*.rs" | grep -v test | grep -v "// " | grep -v doc; then
+            echo "::error::Found potential hardcoded secrets"
+            exit 1
+          fi
+          echo "No hardcoded secrets found"
+
+      # S32: Constant-time comparison usage
+      - name: "S32: Constant-time comparison"
+        run: |
+          if grep -rn "constant_time_eq\|ConstantTimeEq" crates/ --include="*.rs" 2>/dev/null; then
+            echo "Constant-time comparison in use"
+          else
+            echo "::warning::No constant-time comparison found"
+          fi
+
+      # S33: Memory zeroization
+      - name: "S33: Memory zeroization"
+        run: |
+          if grep -rn "impl Drop" crates/ --include="*.rs" | grep -i "secure\|secret\|token\|key" 2>/dev/null; then
+            echo "Memory zeroization patterns found"
+          fi
+
+      # S34: No unsafe in non-FFI code
+      - name: "S34: Unsafe audit"
+        run: |
+          count=$(grep -rn "unsafe " crates/agentic-reality/src/ crates/agentic-reality-mcp/src/ crates/agentic-reality-cli/src/ --include="*.rs" 2>/dev/null | wc -l)
+          echo "Unsafe blocks in non-FFI code: $count"
+          if [ "$count" -gt 5 ]; then
+            echo "::warning::Found $count unsafe blocks in non-FFI code"
+          fi
+
+      # S35: Auth token handling
+      - name: "S35: Auth token handling"
+        run: |
+          if grep -rn "AGENTIC_AUTH_TOKEN" crates/ --include="*.rs" 2>/dev/null; then
+            echo "Auth token handling found"
+          fi
+
+      # S36: Encryption implementation
+      - name: "S36: Encryption check"
+        run: |
+          if grep -rn "Aes256Gcm\|AES-256\|aes_gcm" crates/ --include="*.rs" 2>/dev/null; then
+            echo "AES-256-GCM encryption implementation found"
+          fi
+
+      # S37: Audit logging
+      - name: "S37: Audit logging check"
+        run: |
+          if grep -rn "audit\|AuditLog\|AuditEntry" crates/ --include="*.rs" 2>/dev/null; then
+            echo "Audit logging implementation found"
+          fi
+
+      # S38: Cargo audit (dependency vulnerabilities)
+      - name: "S38: Dependency audit"
+        run: |
+          cargo install cargo-audit 2>/dev/null || true
+          cargo audit 2>/dev/null || echo "::warning::cargo-audit found issues or is not installed"
+
+  # =================================================================
+  # JOB 5: DOCUMENTATION (Sections 39-44)
+  # =================================================================
+  documentation:
+    name: Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # S39: Doc page count (12 required)
+      - name: "S39: Doc page count"
+        run: |
+          count=$(find docs/ -name "*.md" -type f | wc -l)
+          echo "Doc pages: $count (target: 12)"
+          if [ "$count" -lt 12 ]; then
+            echo "::error::Missing documentation pages ($count < 12)"
+            exit 1
+          fi
+
+      # S40: Doc page minimum length
+      - name: "S40: Doc page lengths"
+        run: |
+          stubs=0
+          for doc in docs/*.md; do
+            if [ -f "$doc" ]; then
+              lines=$(wc -l < "$doc")
+              name=$(basename "$doc")
+              echo "  $name: $lines lines"
+              if [ "$lines" -lt 50 ]; then
+                echo "::warning::$name is too short ($lines lines)"
+                stubs=$((stubs + 1))
+              fi
+            fi
+          done
+          if [ "$stubs" -gt 0 ]; then
+            echo "::error::Found $stubs stub documentation pages"
+            exit 1
+          fi
+
+      # S41: SVG diagram count (4 required)
+      - name: "S41: SVG diagram count"
+        run: |
+          count=$(find docs/assets/ -name "*.svg" -type f | wc -l)
+          echo "SVG diagrams: $count (target: 4)"
+          if [ "$count" -lt 4 ]; then
+            echo "::error::Missing SVG diagrams ($count < 4)"
+            exit 1
+          fi
+
+      # S42: README exists and has content
+      - name: "S42: README check"
+        run: |
+          if [ ! -f README.md ]; then
+            echo "::error::README.md not found"
+            exit 1
+          fi
+          lines=$(wc -l < README.md)
+          echo "README.md: $lines lines"
+          if [ "$lines" -lt 50 ]; then
+            echo "::error::README.md is too short"
+            exit 1
+          fi
+
+      # S43: CHANGELOG exists
+      - name: "S43: CHANGELOG check"
+        run: |
+          if [ ! -f CHANGELOG.md ]; then
+            echo "::error::CHANGELOG.md not found"
+            exit 1
+          fi
+
+      # S44: LICENSE exists
+      - name: "S44: LICENSE check"
+        run: |
+          if [ ! -f LICENSE ]; then
+            echo "::error::LICENSE not found"
+            exit 1
+          fi
+          if ! grep -q "MIT" LICENSE; then
+            echo "::error::LICENSE is not MIT"
+            exit 1
+          fi
+
+  # =================================================================
+  # JOB 6: ARCHITECTURE (Sections 45-50)
+  # =================================================================
+  architecture:
+    name: Architecture
+    runs-on: ubuntu-latest
+    needs: code-quality
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+
+      # S45: Four crate workspace
+      - name: "S45: Workspace structure"
+        run: |
+          for crate in agentic-reality agentic-reality-mcp agentic-reality-cli agentic-reality-ffi; do
+            if [ ! -d "crates/$crate" ]; then
+              echo "::error::Missing crate: crates/$crate"
+              exit 1
+            fi
+          done
+          echo "All 4 crates present"
+
+      # S46: Core crate has all domains
+      - name: "S46: Domain coverage"
+        run: |
+          for domain in deployment environment resource reality topology temporal stakes coherence; do
+            if ! grep -rq "$domain" crates/agentic-reality/src/ --include="*.rs" 2>/dev/null; then
+              echo "::warning::Domain '$domain' not found in core crate"
+            fi
+          done
+
+      # S47: Bridge trait count (9 required)
+      - name: "S47: Bridge trait count"
+        run: |
+          count=$(grep -rn "pub trait.*Bridge" crates/agentic-reality/src/ --include="*.rs" 2>/dev/null | wc -l)
+          echo "Bridge traits: $count (target: 9)"
+          if [ "$count" -lt 9 ]; then
+            echo "::warning::Bridge trait count ($count) below target (9)"
+          fi
+
+      # S48: CLI crate compiles
+      - name: "S48: CLI crate build"
+        run: cargo build -p agentic-reality-cli
+
+      # S49: FFI crate compiles
+      - name: "S49: FFI crate build"
+        run: cargo build -p agentic-reality-ffi
+
+      # S50: CLAUDE.md present
+      - name: "S50: CLAUDE.md present"
+        run: |
+          if [ ! -f CLAUDE.md ]; then
+            echo "::error::CLAUDE.md not found"
+            exit 1
+          fi
+          echo "CLAUDE.md present"

@@ -1,0 +1,419 @@
+#!/usr/bin/env bash
+# AgenticReality Universal Installer
+# Usage: curl -fsSL https://agentralabs.com/install/reality | bash
+#
+# Environment variables:
+#   AGENTIC_REALITY_VERSION  - Version to install (default: latest)
+#   AGENTIC_INSTALL_DIR      - Installation directory (default: ~/.agentic)
+#   AGENTIC_BIN_DIR          - Binary directory (default: $INSTALL_DIR/bin)
+#   AGENTIC_PROFILE          - Profile: desktop, terminal, server (default: desktop)
+
+set -euo pipefail
+
+VERSION="${AGENTIC_REALITY_VERSION:-latest}"
+INSTALL_DIR="${AGENTIC_INSTALL_DIR:-$HOME/.agentic}"
+BIN_DIR="${AGENTIC_BIN_DIR:-$INSTALL_DIR/bin}"
+PROFILE="${AGENTIC_PROFILE:-desktop}"
+
+# Colors (disabled if not a terminal)
+if [ -t 1 ]; then
+    RED='\033[0;31m'
+    GREEN='\033[0;32m'
+    YELLOW='\033[1;33m'
+    BLUE='\033[0;34m'
+    BOLD='\033[1m'
+    NC='\033[0m'
+else
+    RED='' GREEN='' YELLOW='' BLUE='' BOLD='' NC=''
+fi
+
+info()    { echo -e "${BLUE}[INFO]${NC} $1"; }
+success() { echo -e "${GREEN}[OK]${NC} $1"; }
+warn()    { echo -e "${YELLOW}[WARN]${NC} $1"; }
+error()   { echo -e "${RED}[ERROR]${NC} $1"; exit 1; }
+
+# Detect platform
+detect_platform() {
+    local os arch
+    os="$(uname -s)"
+    arch="$(uname -m)"
+
+    case "$os" in
+        Linux)                    OS="linux" ;;
+        Darwin)                   OS="macos" ;;
+        MINGW*|MSYS*|CYGWIN*)     OS="windows" ;;
+        *)                        error "Unsupported OS: $os" ;;
+    esac
+
+    case "$arch" in
+        x86_64|amd64)   ARCH="x86_64" ;;
+        arm64|aarch64)  ARCH="aarch64" ;;
+        *)              error "Unsupported architecture: $arch" ;;
+    esac
+
+    PLATFORM="${OS}-${ARCH}"
+    info "Detected platform: $PLATFORM"
+}
+
+# Check prerequisites
+check_prerequisites() {
+    if ! command -v curl &>/dev/null && ! command -v wget &>/dev/null; then
+        error "Neither curl nor wget found. Please install one of them."
+    fi
+
+    if ! command -v tar &>/dev/null; then
+        error "tar not found. Please install tar."
+    fi
+}
+
+# Resolve version
+resolve_version() {
+    if [ "$VERSION" = "latest" ]; then
+        info "Resolving latest version..."
+        if command -v curl &>/dev/null; then
+            VERSION=$(curl -fsSL "https://api.github.com/repos/agentralabs/agentic-reality/releases/latest" 2>/dev/null | grep -o '"tag_name": "[^"]*"' | head -1 | cut -d'"' -f4) || true
+        fi
+
+        if [ -z "$VERSION" ] || [ "$VERSION" = "latest" ]; then
+            VERSION="v0.1.0"
+            warn "Could not resolve latest version, using $VERSION"
+        fi
+        info "Version: $VERSION"
+    fi
+}
+
+# Download binary
+download_binary() {
+    local url="https://github.com/agentralabs/agentic-reality/releases/download/${VERSION}/agentic-reality-${VERSION}-${PLATFORM}.tar.gz"
+    local tmp_dir
+    tmp_dir=$(mktemp -d)
+
+    info "Downloading from $url"
+
+    if command -v curl &>/dev/null; then
+        curl -fsSL "$url" -o "$tmp_dir/agentic-reality.tar.gz" || error "Download failed. Check the version and try again."
+    else
+        wget -q "$url" -O "$tmp_dir/agentic-reality.tar.gz" || error "Download failed. Check the version and try again."
+    fi
+
+    info "Extracting..."
+    tar -xzf "$tmp_dir/agentic-reality.tar.gz" -C "$tmp_dir"
+
+    # Install binary
+    mkdir -p "$BIN_DIR"
+
+    if [ -f "$tmp_dir/areal" ]; then
+        mv "$tmp_dir/areal" "$BIN_DIR/areal"
+    elif [ -f "$tmp_dir/agentic-reality-${VERSION}-${PLATFORM}/areal" ]; then
+        mv "$tmp_dir/agentic-reality-${VERSION}-${PLATFORM}/areal" "$BIN_DIR/areal"
+    else
+        error "Binary not found in archive"
+    fi
+
+    chmod +x "$BIN_DIR/areal"
+
+    # Cleanup
+    rm -rf "$tmp_dir"
+
+    success "Installed areal to $BIN_DIR/areal"
+}
+
+# Configure PATH
+configure_path() {
+    # Determine shell RC file
+    local shell_rc=""
+    local current_shell
+    current_shell="$(basename "${SHELL:-/bin/bash}")"
+
+    case "$current_shell" in
+        zsh)  shell_rc="$HOME/.zshrc" ;;
+        bash) shell_rc="$HOME/.bashrc" ;;
+        fish) shell_rc="$HOME/.config/fish/config.fish" ;;
+        *)    shell_rc="$HOME/.profile" ;;
+    esac
+
+    # Check if already in PATH
+    if echo "$PATH" | tr ':' '\n' | grep -qF "$BIN_DIR"; then
+        info "PATH already includes $BIN_DIR"
+        return
+    fi
+
+    # Add to RC file
+    if [ -n "$shell_rc" ] && [ -f "$shell_rc" ]; then
+        if ! grep -qF "AGENTIC" "$shell_rc" 2>/dev/null; then
+            {
+                echo ""
+                echo "# AgenticOS"
+                if [ "$current_shell" = "fish" ]; then
+                    echo "set -gx PATH \$PATH $BIN_DIR"
+                else
+                    echo "export PATH=\"\$PATH:$BIN_DIR\""
+                fi
+            } >> "$shell_rc"
+            info "Added $BIN_DIR to PATH in $shell_rc"
+        fi
+    elif [ -n "$shell_rc" ]; then
+        # RC file doesn't exist yet, create it
+        {
+            echo "# AgenticOS"
+            echo "export PATH=\"\$PATH:$BIN_DIR\""
+        } > "$shell_rc"
+        info "Created $shell_rc with PATH configuration"
+    fi
+}
+
+# Configure MCP for Claude Desktop
+configure_mcp_desktop() {
+    info "Configuring MCP for Claude Desktop..."
+
+    local config_dir config_file
+
+    if [ "$OS" = "macos" ]; then
+        config_dir="$HOME/Library/Application Support/Claude"
+    elif [ "$OS" = "linux" ]; then
+        config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/claude"
+    else
+        config_dir="$APPDATA/Claude"
+    fi
+
+    config_file="$config_dir/claude_desktop_config.json"
+    mkdir -p "$config_dir"
+
+    if [ -f "$config_file" ]; then
+        # Backup existing config
+        cp "$config_file" "$config_file.backup.$(date +%s)"
+
+        # Merge using jq if available
+        if command -v jq &>/dev/null; then
+            local tmp_file
+            tmp_file=$(mktemp)
+            jq --arg bin "$BIN_DIR/areal" '
+                .mcpServers["agentic-reality"] = {
+                    "command": $bin,
+                    "args": ["serve"]
+                }
+            ' "$config_file" > "$tmp_file"
+            mv "$tmp_file" "$config_file"
+            success "MCP configured for Claude Desktop (merged into existing config)"
+        else
+            warn "jq not found. Please manually add agentic-reality to $config_file"
+            warn "Add: {\"mcpServers\": {\"agentic-reality\": {\"command\": \"$BIN_DIR/areal\", \"args\": [\"serve\"]}}}"
+        fi
+    else
+        # Create new config
+        cat > "$config_file" << CONF
+{
+  "mcpServers": {
+    "agentic-reality": {
+      "command": "$BIN_DIR/areal",
+      "args": ["serve"]
+    }
+  }
+}
+CONF
+        success "MCP configured for Claude Desktop (new config created)"
+    fi
+}
+
+# Configure MCP for VS Code
+configure_mcp_vscode() {
+    local vscode_dir="$HOME/.vscode"
+    local settings_file="$vscode_dir/settings.json"
+
+    if [ -d "$vscode_dir" ] && command -v jq &>/dev/null; then
+        info "Configuring MCP for VS Code..."
+
+        if [ -f "$settings_file" ]; then
+            local tmp_file
+            tmp_file=$(mktemp)
+            jq --arg bin "$BIN_DIR/areal" '
+                .["mcp.servers"]["agentic-reality"] = {
+                    "command": $bin,
+                    "args": ["serve"]
+                }
+            ' "$settings_file" > "$tmp_file" 2>/dev/null && mv "$tmp_file" "$settings_file"
+            success "MCP configured for VS Code"
+        fi
+    fi
+}
+
+# Install launchd service (macOS)
+install_launchd_service() {
+    local plist="$HOME/Library/LaunchAgents/com.agentralabs.reality.plist"
+    mkdir -p "$HOME/Library/LaunchAgents"
+    mkdir -p "$INSTALL_DIR/logs"
+
+    cat > "$plist" << PLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.agentralabs.reality</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>$BIN_DIR/areal</string>
+        <string>serve</string>
+        <string>--mode</string>
+        <string>http</string>
+        <string>--port</string>
+        <string>3010</string>
+        <string>--auth</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>$INSTALL_DIR/logs/reality.log</string>
+    <key>StandardErrorPath</key>
+    <string>$INSTALL_DIR/logs/reality.err</string>
+</dict>
+</plist>
+PLIST
+
+    launchctl load "$plist" 2>/dev/null || true
+    success "Installed launchd service"
+}
+
+# Install systemd service (Linux)
+install_systemd_service() {
+    local service_dir="$HOME/.config/systemd/user"
+    local service_file="$service_dir/agentic-reality.service"
+    mkdir -p "$service_dir"
+
+    cat > "$service_file" << UNIT
+[Unit]
+Description=AgenticReality MCP Server
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=$BIN_DIR/areal serve --mode http --port 3010 --auth
+Restart=always
+RestartSec=10
+Environment=AGENTIC_AUTH_TOKEN=%h/.agentic/auth_token
+
+[Install]
+WantedBy=default.target
+UNIT
+
+    systemctl --user daemon-reload 2>/dev/null || true
+    systemctl --user enable agentic-reality 2>/dev/null || true
+    success "Installed systemd service"
+}
+
+# Install service based on OS
+install_service() {
+    info "Installing system service..."
+
+    if [ "$OS" = "macos" ]; then
+        install_launchd_service
+    elif [ "$OS" = "linux" ]; then
+        install_systemd_service
+    else
+        warn "Service installation not supported on $OS"
+    fi
+}
+
+# Generate auth token for server mode
+generate_auth_token() {
+    local token_file="$INSTALL_DIR/auth_token"
+
+    if [ ! -f "$token_file" ]; then
+        mkdir -p "$INSTALL_DIR"
+
+        if command -v openssl &>/dev/null; then
+            openssl rand -hex 32 > "$token_file"
+        else
+            # Fallback to /dev/urandom
+            head -c 32 /dev/urandom | xxd -p -c 64 > "$token_file"
+        fi
+
+        chmod 600 "$token_file"
+        info "Generated auth token: $token_file"
+        warn "Set AGENTIC_AUTH_TOKEN to the contents of this file"
+    else
+        info "Auth token already exists at $token_file"
+    fi
+}
+
+# Print usage help
+print_usage() {
+    echo ""
+    echo "AgenticReality Universal Installer"
+    echo ""
+    echo "Usage:"
+    echo "  curl -fsSL https://agentralabs.com/install/reality | bash"
+    echo ""
+    echo "Environment variables:"
+    echo "  AGENTIC_REALITY_VERSION  Version to install (default: latest)"
+    echo "  AGENTIC_INSTALL_DIR      Install directory (default: ~/.agentic)"
+    echo "  AGENTIC_PROFILE          Profile: desktop, terminal, server (default: desktop)"
+    echo ""
+    echo "Profiles:"
+    echo "  desktop   - Install binary + configure Claude Desktop MCP"
+    echo "  terminal  - Install binary only (no MCP configuration)"
+    echo "  server    - Install binary + auth token + system service"
+    echo ""
+}
+
+# Main installation
+main() {
+    if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
+        print_usage
+        exit 0
+    fi
+
+    echo ""
+    echo "============================================================"
+    echo "         AgenticReality Universal Installer"
+    echo "              Sister #10: The Ground"
+    echo "============================================================"
+    echo ""
+
+    check_prerequisites
+    detect_platform
+    resolve_version
+    download_binary
+    configure_path
+
+    case "$PROFILE" in
+        desktop)
+            configure_mcp_desktop
+            configure_mcp_vscode
+            ;;
+        terminal)
+            info "Terminal profile: No MCP configuration"
+            ;;
+        server)
+            generate_auth_token
+            install_service
+            ;;
+        *)
+            error "Unknown profile: $PROFILE (use: desktop, terminal, or server)"
+            ;;
+    esac
+
+    echo ""
+    success "Installation complete!"
+    echo ""
+    echo "Next steps:"
+    echo "  1. Restart your terminal (or run: source ~/.bashrc)"
+    echo "  2. Run: areal workspace init"
+    echo "  3. Run: areal workspace sense"
+    echo ""
+
+    if [ "$PROFILE" = "desktop" ]; then
+        echo "  NOTE: Restart Claude Desktop to load the MCP server"
+        echo ""
+    fi
+
+    if [ "$PROFILE" = "server" ]; then
+        echo "  NOTE: Set AGENTIC_AUTH_TOKEN before starting the service"
+        echo "  Token file: $INSTALL_DIR/auth_token"
+        echo ""
+    fi
+}
+
+main "$@"
