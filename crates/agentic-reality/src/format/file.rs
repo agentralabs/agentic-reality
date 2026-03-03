@@ -58,6 +58,7 @@ impl ArealWriter {
         sections_data.push((SectionType::Coherence, coherence));
 
         header.section_count = sections_data.len() as u32;
+        header.section_table_offset = HEADER_SIZE as u64;
 
         // Build output buffer
         let mut buf = Vec::new();
@@ -67,7 +68,6 @@ impl ArealWriter {
 
         // Section table offset = after header
         let section_table_start = buf.len();
-        header.section_table_offset = section_table_start as u64;
 
         // Reserve space for section table
         let table_size = sections_data.len() * SECTION_ENTRY_SIZE;
