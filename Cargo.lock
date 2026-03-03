@@ -92,6 +92,7 @@ version = "0.1.0"
 dependencies = [
  "agentic-reality",
  "axum",
+ "blake3",
  "chrono",
  "clap",
  "serde",

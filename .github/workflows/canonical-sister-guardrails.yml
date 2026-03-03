@@ -1,0 +1,45 @@
+name: Canonical Sister Guardrails
+
+on:
+  push:
+    paths:
+      - "README.md"
+      - "INSTALL.md"
+      - "install.sh"
+      - "scripts/**"
+      - "docs/**"
+      - "crates/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - ".github/workflows/canonical-sister-guardrails.yml"
+  pull_request:
+    paths:
+      - "README.md"
+      - "INSTALL.md"
+      - "install.sh"
+      - "scripts/**"
+      - "docs/**"
+      - "crates/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - ".github/workflows/canonical-sister-guardrails.yml"
+
+jobs:
+  validate-canonical-sister:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Canonical sister guardrails
+        run: ./scripts/check-canonical-sister.sh
+
+      - name: Canonical consistency guardrails
+        run: |
+          # Run workspace-level consistency check if the script exists
+          if [ -f scripts/check-canonical-consistency.sh ]; then
+            ./scripts/check-canonical-consistency.sh
+          else
+            echo "::warning::scripts/check-canonical-consistency.sh not found, skipping"
+          fi

@@ -43,7 +43,7 @@ impl McpError {
 pub type McpResult<T> = Result<T, McpError>;
 
 /// Tool definition for MCP tools/list.
-#[derive(Debug, Clone, serde::Serialize)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct ToolDefinition {
     pub name: String,
     pub description: String,
@@ -88,6 +88,12 @@ impl ToolCallResult {
     }
 
     pub fn to_value(&self) -> Value {
-        serde_json::to_value(self).unwrap_or(Value::Null)
+        match serde_json::to_value(self) {
+            Ok(v) => v,
+            Err(e) => serde_json::json!({
+                "content": [{"type": "text", "text": format!("serialization error: {}", e)}],
+                "isError": true
+            }),
+        }
     }
 }

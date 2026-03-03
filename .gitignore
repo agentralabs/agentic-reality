@@ -1,1 +1,72 @@
+# Rust
 target/
+*.swp
+*.swo
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+*.whl
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.iml
+.fleet/
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.tox/
+
+# Planning docs / AI prompts (internal only)
+planning-docs/
+CLAUDE-CODE-INSTRUCTIONS*.md
+SPEC-*.md
+
+# Internal vision / roadmap documents
+docs/VISION-*.md
+
+# MCP crate internal docs / specs / AI prompts
+crates/agentic-reality-mcp/docs/
+crates/agentic-reality-mcp/scripts/
+
+# Claude Code
+.claude/
+.agentra/
+
+# FFI (build artifacts)
+/ffi/
+
+# Scripts (internal tooling)
+/agent/scripts/
+/installer/scripts/
+
+# Internal docs (not for public repo)
+docs/internal/
+
+# Local goals (internal only)
+goals/
+
+# Environment
+.env
+.env.local
+*.pem
+*.key

@@ -1,0 +1,120 @@
+name: Runtime Hardening Guardrails
+
+on:
+  push:
+    paths:
+      - "scripts/install.sh"
+      - "scripts/check-runtime-hardening.sh"
+      - "scripts/check-mcp-consolidation.sh"
+      - "docs/ecosystem/CANONICAL_SISTER_KIT.md"
+      - "docs/public/ecosystem/CANONICAL_SISTER_KIT.md"
+      - "crates/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - ".github/workflows/runtime-hardening-guardrails.yml"
+  pull_request:
+    paths:
+      - "scripts/install.sh"
+      - "scripts/check-runtime-hardening.sh"
+      - "scripts/check-mcp-consolidation.sh"
+      - "docs/ecosystem/CANONICAL_SISTER_KIT.md"
+      - "docs/public/ecosystem/CANONICAL_SISTER_KIT.md"
+      - "crates/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - ".github/workflows/runtime-hardening-guardrails.yml"
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  validate-runtime-hardening:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+
+      # Zero unwraps in MCP crate (mandatory)
+      - name: Zero MCP unwraps
+        run: |
+          count=$(grep -rn "\.unwrap()" crates/agentic-reality-mcp/src/ --include="*.rs" | grep -v test | wc -l | tr -d ' ')
+          echo "Unwraps in MCP crate: $count"
+          if [ "$count" -gt 0 ]; then
+            echo "::error::Found $count unwrap() in MCP crate (must be 0)"
+            grep -rn "\.unwrap()" crates/agentic-reality-mcp/src/ --include="*.rs" | grep -v test
+            exit 1
+          fi
+
+      # Zero expects in MCP crate (mandatory)
+      - name: Zero MCP expects
+        run: |
+          count=$(grep -rn "\.expect(" crates/agentic-reality-mcp/src/ --include="*.rs" | grep -v test | wc -l | tr -d ' ')
+          echo "Expects in MCP crate: $count"
+          if [ "$count" -gt 0 ]; then
+            echo "::error::Found $count expect() in MCP crate (must be 0)"
+            grep -rn "\.expect(" crates/agentic-reality-mcp/src/ --include="*.rs" | grep -v test
+            exit 1
+          fi
+
+      # No silent fallbacks in MCP
+      - name: No MCP silent fallbacks
+        run: |
+          count=$(grep -rn "unwrap_or_default\|unwrap_or(" crates/agentic-reality-mcp/src/ --include="*.rs" | grep -v test | wc -l | tr -d ' ')
+          if [ "$count" -gt 0 ]; then
+            echo "::error::Found $count silent fallbacks in MCP crate"
+            grep -rn "unwrap_or_default\|unwrap_or(" crates/agentic-reality-mcp/src/ --include="*.rs" | grep -v test
+            exit 1
+          fi
+
+      # Project isolation: deterministic per-project identity
+      - name: Project isolation validation
+        run: |
+          # Verify canonical-path hashing or equivalent project identity mechanism
+          if grep -rq "canonical.*path\|project.*identity\|project.*hash\|workspace.*id\|ProjectId\|project_id" crates/agentic-reality/src/ --include="*.rs" 2>/dev/null; then
+            echo "Project isolation mechanism found"
+          else
+            echo "::warning::No explicit project isolation mechanism detected"
+          fi
+
+          # Verify no binding to unrelated project state
+          if grep -rn "latest.*cached\|global.*state\|shared.*project" crates/agentic-reality-mcp/src/ --include="*.rs" 2>/dev/null | grep -v test | grep -v "//"; then
+            echo "::warning::Potential unrelated project state binding detected"
+          fi
+
+      # Concurrent lock handling: stale/dead lock recovery
+      - name: Concurrent lock handling
+        run: |
+          # Check for lock file handling patterns
+          if grep -rq "lock\|Lock\|Mutex\|RwLock\|file_lock\|flock" crates/agentic-reality/src/ --include="*.rs" 2>/dev/null; then
+            echo "Lock handling patterns found"
+          else
+            echo "::warning::No explicit lock handling patterns detected"
+          fi
+
+          # Verify no stale lock accumulation risk
+          if grep -rq "stale.*lock\|lock.*timeout\|lock.*recovery\|try_lock\|lock.*cleanup" crates/ --include="*.rs" 2>/dev/null; then
+            echo "Stale lock recovery patterns found"
+          else
+            echo "::warning::No explicit stale lock recovery pattern detected"
+          fi
+
+      # MCP consolidation check (workspace-level)
+      - name: MCP consolidation check
+        run: |
+          if [ -f scripts/check-mcp-consolidation.sh ]; then
+            ./scripts/check-mcp-consolidation.sh
+          else
+            echo "::warning::scripts/check-mcp-consolidation.sh not found, skipping"
+          fi
+
+      # Runtime hardening check
+      - name: Runtime hardening check
+        run: |
+          if [ -f scripts/check-runtime-hardening.sh ]; then
+            ./scripts/check-runtime-hardening.sh
+          else
+            echo "::warning::scripts/check-runtime-hardening.sh not found, skipping"
+          fi

@@ -5,6 +5,7 @@ pub mod prompts;
 pub mod protocol;
 pub mod resources;
 pub mod session;
+pub mod streaming;
 pub mod tools;
 pub mod transport;
 pub mod types;
