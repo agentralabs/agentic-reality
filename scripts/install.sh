@@ -338,6 +338,43 @@ generate_auth_token() {
     fi
 }
 
+# Print MCP client summary
+print_client_help() {
+    local BIN_PATH="$BIN_DIR/areal"
+    local SERVER_ARGS_TEXT='["serve"]'
+
+    echo ""
+    echo "MCP client summary:"
+    echo "  - Auto-configured: Claude Desktop (if detected)"
+    echo "  - Auto-configured: VS Code / Cursor (if detected)"
+    echo ""
+    echo "Universal MCP entry (works in any MCP client):"
+    echo "  command: ${BIN_PATH}"
+    echo "  args: ${SERVER_ARGS_TEXT}"
+    echo ""
+    echo "Quick terminal check:"
+    echo "  ${BIN_PATH} --version"
+    echo "  (Run areal workspace init to create your first .areal file)"
+}
+
+# Print post-install next steps
+print_next_steps() {
+    local SERVER_KEY="agentic-reality"
+    echo ""
+    echo "What happens after installation:"
+    echo "  1. ${SERVER_KEY} was installed as MCP server command: ${BIN_DIR}/areal"
+    if [ "$PROFILE" = "server" ]; then
+        echo "  2. Generate a token (openssl rand -hex 32) and set AGENTIC_TOKEN on the server."
+        echo "  3. Start MCP with auth, connect clients, then restart clients."
+        echo "  4. Optional feedback: open https://github.com/agentralabs/agentic-reality/issues"
+    else
+        echo "  2. Restart your MCP client so it reloads MCP config."
+        echo "  3. After restart, confirm '${SERVER_KEY}' appears in your MCP server list."
+        echo "  4. Run: areal workspace init && areal workspace sense"
+        echo "  5. Optional feedback: open https://github.com/agentralabs/agentic-reality/issues"
+    fi
+}
+
 # Print usage help
 print_usage() {
     echo ""
@@ -398,22 +435,21 @@ main() {
     echo ""
     success "Installation complete!"
     echo ""
-    echo "Next steps:"
-    echo "  1. Restart your terminal (or run: source ~/.bashrc)"
-    echo "  2. Run: areal workspace init"
-    echo "  3. Run: areal workspace sense"
-    echo ""
-
-    if [ "$PROFILE" = "desktop" ]; then
-        echo "  NOTE: Restart Claude Desktop to load the MCP server"
-        echo ""
-    fi
 
     if [ "$PROFILE" = "server" ]; then
-        echo "  NOTE: Set AGENTIC_AUTH_TOKEN before starting the service"
-        echo "  Token file: $INSTALL_DIR/auth_token"
+        echo "Server mode: no MCP client config was modified."
+        echo "Set AGENTIC_TOKEN before starting the service:"
+        echo "  export AGENTIC_TOKEN=\$(openssl rand -hex 32)"
         echo ""
+    else
+        print_client_help
     fi
+
+    print_next_steps
+
+    echo ""
+    echo "Restart your terminal (or run: source ~/.bashrc) to use the areal command."
+    echo ""
 }
 
 main "$@"

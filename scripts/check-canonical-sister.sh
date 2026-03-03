@@ -1,128 +1,398 @@
 #!/usr/bin/env bash
+# check-canonical-sister.sh — Universal canonical sister guardrail
+#
+# This script enforces structural parity across all Agentra sister repos.
+# The assertion body is IDENTICAL across all sisters. Only the header
+# variables differ. If any check fails, the sister is NOT release-ready.
+#
 set -euo pipefail
 
-# check-canonical-sister.sh — Verify sister project parity requirements.
-# Exits 1 on any failure.
+# ── Sister-specific configuration (ONLY section that differs per sister) ─────
+SISTER_KEY="reality"
+SISTER_NAME="AgenticReality"
+FRONTMATTER_EXTRA=(
+)
+# ── End sister-specific configuration ────────────────────────────────────────
 
-REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-FAIL=0
+# ── Shared helpers ───────────────────────────────────────────────────────────
 
-pass() { echo "  PASS  $1"; }
-fail() { echo "  FAIL  $1"; FAIL=1; }
+fail() {
+  echo "ERROR: $*" >&2
+  exit 1
+}
 
-echo "=== Canonical Sister Check ==="
-echo ""
+find_fixed() {
+  local pattern="$1"
+  shift
+  if command -v rg >/dev/null 2>&1; then
+    rg -nF "$pattern" "$@"
+  else
+    grep -R -n -F -- "$pattern" "$@"
+  fi
+}
 
-# --- 1. Canonical doc folder has 12+ .md files ---
-echo "--- Documentation file count ---"
-DOCS_DIR="$REPO_ROOT/docs"
-if [[ -d "$DOCS_DIR" ]]; then
-    DOC_COUNT=$(find "$DOCS_DIR" -maxdepth 1 -name '*.md' -type f 2>/dev/null | wc -l | tr -d ' ')
-    if [[ "$DOC_COUNT" -ge 12 ]]; then
-        pass "docs/ has $DOC_COUNT .md files (>= 12 required)"
-    else
-        fail "docs/ has only $DOC_COUNT .md files (>= 12 required)"
+assert_file() {
+  [ -f "$1" ] || fail "Missing required file: $1"
+}
+
+assert_dir() {
+  [ -d "$1" ] || fail "Missing required directory: $1"
+}
+
+assert_contains() {
+  local pattern="$1"
+  shift
+  find_fixed "$pattern" "$@" >/dev/null || fail "Missing required pattern: ${pattern}"
+}
+
+assert_one_of() {
+  local matched=0
+  for candidate in "$@"; do
+    if [ -f "$candidate" ]; then
+      matched=1
+      break
     fi
-else
-    fail "docs/ directory not found"
-fi
+  done
+  [ "$matched" -eq 1 ] || fail "Missing required file (one of): $*"
+}
 
-# --- 2. 4+ SVG files in docs/assets/ ---
-echo ""
-echo "--- SVG diagram count ---"
-ASSETS_DIR="$REPO_ROOT/docs/assets"
-if [[ -d "$ASSETS_DIR" ]]; then
-    SVG_COUNT=$(find "$ASSETS_DIR" -name '*.svg' -type f 2>/dev/null | wc -l | tr -d ' ')
-    if [[ "$SVG_COUNT" -ge 4 ]]; then
-        pass "docs/assets/ has $SVG_COUNT SVG files (>= 4 required)"
-    else
-        fail "docs/assets/ has only $SVG_COUNT SVG files (>= 4 required)"
+assert_not_tracked() {
+  local path="$1"
+  if git ls-files --error-unmatch "$path" >/dev/null 2>&1; then
+    fail "Internal-only file must not be tracked: $path"
+  fi
+}
+
+assert_no_tracked_prefix() {
+  local pattern="$1"
+  if [ -n "$(git ls-files "$pattern")" ]; then
+    fail "Internal-only path must not be tracked: $pattern"
+  fi
+}
+
+assert_frontmatter_status_stable() {
+  local file="$1"
+  assert_file "$file"
+  local status
+  status="$(awk '
+    NR==1 && $0=="---" {fm=1; next}
+    fm && /^status:[[:space:]]*/ {
+      sub(/^status:[[:space:]]*/, "", $0)
+      gsub(/[[:space:]]+/, "", $0)
+      print tolower($0)
+      exit
+    }
+    fm && $0=="---" {exit}
+  ' "$file")"
+  [ "$status" = "stable" ] || fail "Public doc must include frontmatter status: stable ($file)"
+}
+
+assert_image_spacing() {
+  local min_gap=10
+  local prev=0
+  local line
+  while IFS= read -r line; do
+    local n="${line%%:*}"
+    if [ "$prev" -ne 0 ] && [ $((n - prev)) -lt "$min_gap" ]; then
+      fail "README image blocks too close together (lines ${prev} and ${n})"
     fi
-else
-    fail "docs/assets/ directory not found"
+    prev="$n"
+  done < <(grep -n '<img src="assets/' README.md || true)
+}
+
+# ── 1. Core file existence ──────────────────────────────────────────────────
+
+assert_file "docs/ecosystem/CANONICAL_SISTER_KIT.md"
+assert_file "scripts/install.sh"
+assert_file "scripts/check-install-commands.sh"
+assert_file "scripts/check-runtime-hardening.sh"
+assert_file "scripts/test-primary-problems.sh"
+assert_file "docs/public/quickstart.md"
+assert_file "docs/public/concepts.md"
+assert_file "docs/public/integration-guide.md"
+assert_file "docs/public/faq.md"
+assert_file "docs/public/benchmarks.md"
+assert_file "docs/public/api-reference.md"
+assert_one_of "docs/public/file-format.md" "docs/public/LIMITATIONS.md"
+assert_file "docs/public/primary-problem-coverage.md"
+assert_file "docs/public/initial-problem-coverage.md"
+assert_file "docs/public/sister.manifest.json"
+
+# ── 2. Asset existence ──────────────────────────────────────────────────────
+
+assert_dir "assets"
+assert_file "assets/github-hero-pane.svg"
+assert_file "assets/github-terminal-pane.svg"
+
+# ── 3. Git tracking validation ──────────────────────────────────────────────
+
+assert_not_tracked "ECOSYSTEM-CONVENTIONS.md"
+assert_no_tracked_prefix "docs/internal/*"
+
+# ── 4. CANONICAL_SISTER_KIT.md section headers ──────────────────────────────
+
+assert_contains '## 1. Release Artifact Contract' docs/ecosystem/CANONICAL_SISTER_KIT.md
+assert_contains '## 2. Install Contract Spec' docs/ecosystem/CANONICAL_SISTER_KIT.md
+assert_contains '## 3. Reusable CI Guardrails' docs/ecosystem/CANONICAL_SISTER_KIT.md
+assert_contains '## 4. README Canonical Layout' docs/ecosystem/CANONICAL_SISTER_KIT.md
+assert_contains '## 5. MCP Canonical Profile' docs/ecosystem/CANONICAL_SISTER_KIT.md
+assert_contains '## 6. Packaging Policy' docs/ecosystem/CANONICAL_SISTER_KIT.md
+assert_contains '## 7. Versioning and Release Policy' docs/ecosystem/CANONICAL_SISTER_KIT.md
+assert_contains '## 8. Design Asset Contract' docs/ecosystem/CANONICAL_SISTER_KIT.md
+assert_contains '## 9. Env Var Namespace Contract' docs/ecosystem/CANONICAL_SISTER_KIT.md
+assert_contains '## 10. New-Sister Bootstrap' docs/ecosystem/CANONICAL_SISTER_KIT.md
+assert_contains '## 11. Workspace Orchestrator Contract' docs/ecosystem/CANONICAL_SISTER_KIT.md
+assert_contains '## 12. Web Docs Grouping Contract' docs/ecosystem/CANONICAL_SISTER_KIT.md
+assert_contains '## 13. Runtime Isolation and Universal MCP Hardening (Mandatory)' docs/ecosystem/CANONICAL_SISTER_KIT.md
+
+# ── 5. CANONICAL_SISTER_KIT.md in public docs mirror ────────────────────────
+
+assert_contains '## 13. Runtime Isolation and Universal MCP Hardening (Mandatory)' docs/public/ecosystem/CANONICAL_SISTER_KIT.md
+if [ -f planning-docs/CANONICAL_SISTER_KIT.md ]; then
+  assert_contains '## 13. Runtime Isolation and Universal MCP Hardening (Mandatory)' planning-docs/CANONICAL_SISTER_KIT.md
 fi
 
-# --- 3. MCP quality — tool descriptions verb-first, no trailing periods ---
-echo ""
-echo "--- MCP tool description quality ---"
-REGISTRY="$REPO_ROOT/crates/agentic-reality-mcp/src/tools/registry.rs"
-if [[ -f "$REGISTRY" ]]; then
-    # Extract description values
-    DESCRIPTIONS=$(grep -o 'description: *"[^"]*"' "$REGISTRY" | sed 's/description: *"//;s/"$//')
+# ── 6. Section 13 runtime isolation key phrases ─────────────────────────────
 
-    # Check for trailing periods
-    TRAILING_PERIODS=0
-    while IFS= read -r desc; do
-        if [[ -z "$desc" ]]; then continue; fi
-        if [[ "$desc" == *. ]]; then
-            fail "trailing period in description: \"$desc\""
-            TRAILING_PERIODS=$((TRAILING_PERIODS + 1))
-        fi
-    done <<< "$DESCRIPTIONS"
-    if [[ $TRAILING_PERIODS -eq 0 ]]; then
-        pass "no trailing periods in tool descriptions"
+assert_contains 'No silent fallback behavior for invalid enum/mode/depth/type parameters.' docs/ecosystem/CANONICAL_SISTER_KIT.md
+assert_contains 'Deterministic per-project identity is required (canonical-path hashing or equivalent).' docs/ecosystem/CANONICAL_SISTER_KIT.md
+assert_contains 'Do not bind to unrelated "latest cached" project state.' docs/ecosystem/CANONICAL_SISTER_KIT.md
+assert_contains 'Stale/dead lock recovery is mandatory.' docs/ecosystem/CANONICAL_SISTER_KIT.md
+assert_contains 'Support `desktop`, `terminal`, and `server` profiles.' docs/ecosystem/CANONICAL_SISTER_KIT.md
+assert_contains 'Post-install output must include restart guidance and optional feedback guidance.' docs/ecosystem/CANONICAL_SISTER_KIT.md
+assert_contains 'Server profile/runtime must enforce token-based auth gate (`AGENTIC_TOKEN` or token file equivalent).' docs/ecosystem/CANONICAL_SISTER_KIT.md
+assert_contains 'Release gate requires automated stress/regression proof for:' docs/ecosystem/CANONICAL_SISTER_KIT.md
+
+# ── 7. Ecosystem URLs and key requirement phrases ───────────────────────────
+
+assert_contains 'https://agentralabs.tech/docs/ecosystem-feature-reference' docs/ecosystem/CANONICAL_SISTER_KIT.md
+assert_contains 'https://agentralabs.tech/docs/sister-docs-catalog' docs/ecosystem/CANONICAL_SISTER_KIT.md
+assert_contains 'docs folder required for every sister' docs/ecosystem/CANONICAL_SISTER_KIT.md
+assert_contains 'web docs wiring is mandatory before release' docs/ecosystem/CANONICAL_SISTER_KIT.md
+assert_contains 'Installer strength/completeness is mandatory for every new sister.' docs/ecosystem/CANONICAL_SISTER_KIT.md
+assert_contains 'Before implementing a new sister installer, review `agentic-memory/scripts/install.sh`, `agentic-vision/scripts/install.sh`, and `agentic-codebase/scripts/install.sh` as benchmark baselines.' docs/ecosystem/CANONICAL_SISTER_KIT.md
+assert_contains '`agentic-memory-mcp`, `agentic-vision-mcp`, `agentic-codebase-mcp`, and `agentic-identity-mcp` are treated as live ecosystem infrastructure.' docs/ecosystem/CANONICAL_SISTER_KIT.md
+assert_contains 'New sister planning, implementation, and validation must explicitly use those MCP servers where applicable (design support, integration checks, stress/regression checks).' docs/ecosystem/CANONICAL_SISTER_KIT.md
+
+# ── 8. Sister manifest validation (parameterized) ───────────────────────────
+
+assert_contains "\"key\": \"${SISTER_KEY}\"" docs/public/sister.manifest.json
+assert_contains "\"name\": \"${SISTER_NAME}\"" docs/public/sister.manifest.json
+assert_contains '"page_ids": [' docs/public/sister.manifest.json
+
+# ── 9. Public docs frontmatter (common baseline) ────────────────────────────
+
+FRONTMATTER_BASELINE=(
+  "docs/public/experience-with-vs-without.md"
+  "docs/public/quickstart.md"
+  "docs/public/installation.md"
+  "docs/public/command-surface.md"
+  "docs/public/runtime-install-sync.md"
+  "docs/public/integration-guide.md"
+  "docs/public/concepts.md"
+  "docs/public/api-reference.md"
+  "docs/public/benchmarks.md"
+  "docs/public/faq.md"
+)
+
+for doc in "${FRONTMATTER_BASELINE[@]}"; do
+  assert_frontmatter_status_stable "$doc"
+done
+
+for doc in "${FRONTMATTER_EXTRA[@]}"; do
+  assert_frontmatter_status_stable "$doc"
+done
+
+# ── 10. README canonical layout ─────────────────────────────────────────────
+
+assert_contains '<img src="assets/github-hero-pane.svg"' README.md
+assert_contains '<img src="assets/github-terminal-pane.svg"' README.md
+assert_contains '## Install' README.md
+assert_contains '## Quickstart' README.md
+assert_contains '## How It Works' README.md
+assert_image_spacing
+
+# ── 11. Install script canonical output ─────────────────────────────────────
+
+assert_contains 'MCP client summary:' scripts/install.sh
+assert_contains 'Universal MCP entry (works in any MCP client):' scripts/install.sh
+assert_contains 'Quick terminal check:' scripts/install.sh
+assert_contains 'echo "  args: ${SERVER_ARGS_TEXT}"' scripts/install.sh
+assert_contains 'After restart, confirm' scripts/install.sh
+assert_contains 'Optional feedback:' scripts/install.sh
+assert_contains 'AGENTIC_TOKEN' scripts/install.sh
+
+# ── 12. CI workflow presence ────────────────────────────────────────────────
+
+assert_file ".github/workflows/ci.yml"
+assert_file ".github/workflows/release.yml"
+assert_file ".github/workflows/canonical-sister-guardrails.yml"
+assert_file ".github/workflows/install-command-guardrails.yml"
+
+# ── 13. README nav bar links ────────────────────────────────────────────────
+
+assert_contains 'href="#quickstart"' README.md
+assert_contains 'href="#problems-solved"' README.md
+assert_contains 'href="#how-it-works"' README.md
+assert_contains 'href="#benchmarks"' README.md
+assert_contains 'href="#install"' README.md
+
+# ── 14. README architecture SVG width ───────────────────────────────────────
+
+if grep -qF 'architecture-agentra.svg' README.md; then
+  grep 'architecture-agentra.svg' README.md | grep -qF 'width="980"' \
+    || fail "README architecture SVG must use width=\"980\""
+fi
+
+# ── 15. Manifest page_ids baseline ──────────────────────────────────────────
+
+MANIFEST_BASELINE_PAGE_IDS=(
+  experience-with-vs-without
+  quickstart
+  installation
+  command-surface
+  runtime-install-sync
+)
+
+for pid in "${MANIFEST_BASELINE_PAGE_IDS[@]}"; do
+  assert_contains "\"${pid}\"" docs/public/sister.manifest.json
+done
+
+# ── 16. README npm install row ───────────────────────────────────────────────
+
+assert_contains 'npm install @agenticamem/' README.md
+
+# ── 17. Installation doc npm section ─────────────────────────────────────────
+
+assert_contains 'npm install @agenticamem/' docs/public/installation.md
+
+# ── 18. Required SVG assets ──────────────────────────────────────────────────
+
+assert_file "assets/benchmark-chart.svg"
+assert_file "assets/architecture-agentra.svg"
+
+# ── 19. README references benchmark and architecture SVGs ────────────────────
+
+assert_contains 'benchmark-chart.svg' README.md
+assert_contains 'architecture-agentra.svg' README.md
+
+# ── 20. No root-level doc duplication ────────────────────────────────────────
+# Canonical docs live in docs/public/. Root-level duplicates cause confusion.
+# NOTE: docs/quickstart.md is intentionally kept as a lightweight install-route
+# pointer (different content from docs/public/quickstart.md).
+
+ANTI_DUPE_FILES=(
+  "docs/concepts.md"
+  "docs/integration-guide.md"
+  "docs/faq.md"
+  "docs/benchmarks.md"
+  "docs/api-reference.md"
+  "docs/file-format.md"
+  "docs/command-surface.md"
+  "docs/runtime-install-sync.md"
+)
+
+for dupe in "${ANTI_DUPE_FILES[@]}"; do
+  if git ls-files --error-unmatch "$dupe" >/dev/null 2>&1; then
+    fail "Root-level duplicate doc must not be tracked: $dupe (canonical location: docs/public/)"
+  fi
+done
+
+# ── 21. Use-case playbook presence ──────────────────────────────────────────
+
+assert_file "docs/public/playbooks-agent-integration.md"
+assert_frontmatter_status_stable "docs/public/playbooks-agent-integration.md"
+
+# ── 22. 4-crate structure (core + mcp + cli + ffi) + language bindings ──────
+
+assert_dir "crates/agentic-${SISTER_KEY}-cli"
+assert_file "crates/agentic-${SISTER_KEY}-cli/Cargo.toml"
+
+assert_dir "crates/agentic-${SISTER_KEY}-mcp"
+assert_file "crates/agentic-${SISTER_KEY}-mcp/Cargo.toml"
+
+assert_dir "crates/agentic-${SISTER_KEY}-ffi"
+assert_file "crates/agentic-${SISTER_KEY}-ffi/Cargo.toml"
+
+assert_dir "python"
+assert_file "python/pyproject.toml"
+
+assert_dir "npm/wasm"
+assert_file "npm/wasm/Cargo.toml"
+
+# ── 23. MCP stdio hardening (Section 13 enforcement) ────────────────────────
+# Every sister's MCP server must enforce:
+#   - 8 MiB frame size limit (MAX_CONTENT_LENGTH_BYTES)
+#   - Content-Length framing support
+#   - JSON-RPC version validation ("2.0")
+
+MCP_SRC="crates/agentic-${SISTER_KEY}-mcp/src"
+assert_dir "$MCP_SRC"
+
+# 8 MiB frame limit constant must exist in MCP server source
+assert_contains "MAX_CONTENT_LENGTH_BYTES" "$MCP_SRC"
+
+# Content-Length header parsing must exist
+assert_contains "content-length:" "$MCP_SRC"
+
+# JSON-RPC 2.0 version must be validated (reject non-2.0)
+assert_contains 'jsonrpc' "$MCP_SRC"
+
+# ── 24. Research paper directory ──────────────────────────────────────────
+# Every sister must have a paper/ directory with at least one paper-i-*
+# subfolder containing a .tex file and references.bib.
+
+assert_dir "paper"
+PAPER_I_DIR="$(ls -d paper/paper-i-* 2>/dev/null | head -1)"
+[ -n "$PAPER_I_DIR" ] || fail "Missing paper/paper-i-* directory"
+ls "$PAPER_I_DIR"/*.tex >/dev/null 2>&1 || fail "Missing .tex file in $PAPER_I_DIR"
+assert_file "$PAPER_I_DIR/references.bib"
+
+# ── 25. Benchmark suite for paper quality ──────────────────────────────────
+# Every sister with a research paper must have a Criterion benchmark suite
+# that produces real measured data. No estimates allowed in papers.
+# SPEC-RESEARCH-PAPER-CANONICAL.md v2.0 mandates: benchmarks BEFORE paper.
+
+BENCH_FOUND=0
+for bench_dir in "crates/agentic-${SISTER_KEY}/benches" "crates/${SISTER_KEY}/benches" "benches"; do
+  if [ -d "$bench_dir" ] && ls "$bench_dir"/*.rs >/dev/null 2>&1; then
+    BENCH_FOUND=1
+    find_fixed "criterion" "$bench_dir" >/dev/null 2>&1 \
+      || find_fixed "Criterion" "$bench_dir" >/dev/null 2>&1 \
+      || fail "Benchmark files in $bench_dir must use Criterion framework"
+    # Minimum benchmark count: at least 5 benchmark functions
+    BENCH_COUNT=$({ grep -rcE 'criterion_group!|fn bench_|\.bench_function|\.bench_with_input|BenchmarkId' "$bench_dir" 2>/dev/null || true; } | awk -F: '{sum+=$NF} END {print sum+0}')
+    [ "$BENCH_COUNT" -ge 5 ] || fail "Benchmark suite needs ≥5 benchmark references (found ${BENCH_COUNT})"
+    break
+  fi
+done
+[ "$BENCH_FOUND" -eq 1 ] || fail "Missing benchmark suite (benches/ directory with Criterion benchmarks required for paper data)"
+
+# ── 26. Stress / edge-case test suite ──────────────────────────────────────
+# Every sister must have stress tests or edge-case tests that cover boundary
+# conditions, heavy loads, and error paths. Without these, the paper's
+# "robustness" claims have no backing.
+
+STRESS_FOUND=0
+for test_dir in "crates/agentic-${SISTER_KEY}/tests" "crates/${SISTER_KEY}/tests" "tests"; do
+  if [ -d "$test_dir" ]; then
+    # Look for files containing stress/edge/boundary test patterns
+    STRESS_HITS=0
+    for keyword in stress edge_ boundary heavy; do
+      hits=$({ find_fixed "$keyword" "$test_dir" 2>/dev/null || true; } | wc -l | tr -d ' ')
+      STRESS_HITS=$((STRESS_HITS + hits))
+    done
+    if [ "$STRESS_HITS" -gt 0 ]; then
+      STRESS_FOUND=1
+      # Count actual test functions in the test directory
+      STRESS_TEST_COUNT=$({ grep -rcE '#\[test\]' "$test_dir" 2>/dev/null || true; } | awk -F: '{sum+=$NF} END {print sum+0}')
+      [ "$STRESS_TEST_COUNT" -ge 10 ] || fail "Stress test suite needs ≥10 test functions (found ${STRESS_TEST_COUNT})"
+      break
     fi
+  fi
+done
+[ "$STRESS_FOUND" -eq 1 ] || fail "Missing stress/edge-case test suite (tests/ directory with stress or edge-case tests required)"
 
-    # Check verb-first (first word should be a verb — capitalized action word)
-    NON_VERB=0
-    while IFS= read -r desc; do
-        if [[ -z "$desc" ]]; then continue; fi
-        FIRST_WORD=$(echo "$desc" | awk '{print $1}')
-        # Verb-first means the first word should be an action verb (capitalized)
-        # Common verb starters: Manage, Access, Sense, Monitor, Discover, Create, Detect, Map, Ground, Assess, Maintain, Get, Perform
-        if [[ "$FIRST_WORD" =~ ^[A-Z][a-z]+$ ]]; then
-            pass "verb-first description: \"$FIRST_WORD ...\""
-        else
-            fail "description may not be verb-first: \"$desc\""
-            NON_VERB=$((NON_VERB + 1))
-        fi
-    done <<< "$DESCRIPTIONS"
-else
-    fail "registry.rs not found — cannot check MCP quality"
-fi
+# ── Done ────────────────────────────────────────────────────────────────────
 
-# --- 4. Sisters registry compatibility (.areal extension, areal binary) ---
-echo ""
-echo "--- Sisters registry compatibility ---"
-
-# Check that Cargo.toml defines the areal binary
-CLI_CARGO="$REPO_ROOT/crates/agentic-reality-cli/Cargo.toml"
-if [[ -f "$CLI_CARGO" ]]; then
-    if grep -q 'name = "areal"' "$CLI_CARGO"; then
-        pass "CLI binary name is 'areal'"
-    else
-        fail "CLI binary name is not 'areal' in Cargo.toml"
-    fi
-else
-    fail "crates/agentic-reality-cli/Cargo.toml not found"
-fi
-
-# Check that .areal extension is referenced in the codebase
-AREAL_REFS=$(grep -r '\.areal' "$REPO_ROOT/crates" --include='*.rs' 2>/dev/null | wc -l | tr -d ' ')
-if [[ "$AREAL_REFS" -gt 0 ]]; then
-    pass ".areal extension referenced in codebase ($AREAL_REFS occurrence(s))"
-else
-    fail ".areal extension not referenced anywhere in crates/"
-fi
-
-# Check sisters-registry.json if it exists (may be at workspace level)
-SISTER_REG="$REPO_ROOT/docs/sisters-registry.json"
-if [[ -f "$SISTER_REG" ]]; then
-    if grep -q 'areal' "$SISTER_REG" && grep -q '\.areal' "$SISTER_REG"; then
-        pass "sisters-registry.json references areal and .areal"
-    else
-        fail "sisters-registry.json missing areal or .areal references"
-    fi
-else
-    # Not a failure — registry may live at the parent workspace level
-    echo "  INFO  docs/sisters-registry.json not found (may be at workspace level)"
-fi
-
-# --- Summary ---
-echo ""
-if [[ $FAIL -ne 0 ]]; then
-    echo "RESULT: FAIL — sister parity issues detected."
-    exit 1
-else
-    echo "RESULT: PASS — sister parity requirements met."
-fi
+echo "Canonical sister guardrails passed."
