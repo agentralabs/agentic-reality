@@ -13,6 +13,9 @@ use agentic_reality_mcp::config::{self, ServerConfig};
 use agentic_reality_mcp::protocol::ProtocolHandler;
 use agentic_reality_mcp::session::SessionManager;
 
+/// 8 MiB maximum inbound request size for stdio JSON-RPC frames.
+const MAX_CONTENT_LENGTH_BYTES: usize = 8 * 1024 * 1024;
+
 /// AgenticReality MCP Server — existential grounding for AI agents.
 #[derive(Parser)]
 #[command(
@@ -148,6 +151,18 @@ fn run_stdio(config: &ServerConfig) -> Result<(), Box<dyn std::error::Error>> {
 
             let trimmed = line.trim();
             if trimmed.is_empty() {
+                continue;
+            }
+            if trimmed.len() > MAX_CONTENT_LENGTH_BYTES {
+                let error_response = serde_json::json!({
+                    "jsonrpc": "2.0",
+                    "id": serde_json::Value::Null,
+                    "error": {
+                        "code": -32600,
+                        "message": format!("Request exceeds {} bytes", MAX_CONTENT_LENGTH_BYTES),
+                    }
+                });
+                write_response(&stdout, &error_response);
                 continue;
             }
 
