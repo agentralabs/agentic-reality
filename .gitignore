@@ -36,6 +36,17 @@ htmlcov/
 .mypy_cache/
 .tox/
 
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
 # Planning docs / AI prompts (internal only)
 planning-docs/
 CLAUDE-CODE-INSTRUCTIONS*.md
@@ -51,6 +62,11 @@ crates/agentic-reality-mcp/scripts/
 # Claude Code
 .claude/
 .agentra/
+docs/REPO_HYGIENE.md
+
+# Root-level paper files (canonical copies are in paper/)
+/agenticreality-paper.*
+/references.bib
 
 # FFI (build artifacts)
 /ffi/
@@ -61,6 +77,7 @@ crates/agentic-reality-mcp/scripts/
 
 # Internal docs (not for public repo)
 docs/internal/
+ECOSYSTEM-CONVENTIONS.md
 
 # Local goals (internal only)
 goals/
@@ -70,3 +87,7 @@ goals/
 .env.local
 *.pem
 *.key
+
+# Sister-specific lock/temp files
+*.areal.tmp
+*.areal.lock
