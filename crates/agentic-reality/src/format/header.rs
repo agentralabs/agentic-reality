@@ -80,29 +80,77 @@ impl ArealHeader {
         if data.len() < HEADER_SIZE {
             return Err(RealityError::InvalidFormat("header too short".into()));
         }
-        let magic: [u8; 4] = data[0..4].try_into().map_err(|_| RealityError::InvalidMagic)?;
+        let magic: [u8; 4] = data[0..4]
+            .try_into()
+            .map_err(|_| RealityError::InvalidMagic)?;
         if magic != AREAL_MAGIC {
             return Err(RealityError::InvalidMagic);
         }
-        let version = u32::from_le_bytes(data[4..8].try_into().map_err(|_| RealityError::InvalidFormat("version".into()))?);
+        let version = u32::from_le_bytes(
+            data[4..8]
+                .try_into()
+                .map_err(|_| RealityError::InvalidFormat("version".into()))?,
+        );
         if version != FORMAT_VERSION {
-            return Err(RealityError::VersionMismatch { expected: FORMAT_VERSION, got: version });
+            return Err(RealityError::VersionMismatch {
+                expected: FORMAT_VERSION,
+                got: version,
+            });
         }
-        let flags = u64::from_le_bytes(data[8..16].try_into().map_err(|_| RealityError::InvalidFormat("flags".into()))?);
-        let incarnation_id: [u8; 16] = data[16..32].try_into().map_err(|_| RealityError::InvalidFormat("incarnation_id".into()))?;
-        let created = i64::from_le_bytes(data[32..40].try_into().map_err(|_| RealityError::InvalidFormat("created".into()))?);
-        let modified = i64::from_le_bytes(data[40..48].try_into().map_err(|_| RealityError::InvalidFormat("modified".into()))?);
-        let section_count = u32::from_le_bytes(data[48..52].try_into().map_err(|_| RealityError::InvalidFormat("section_count".into()))?);
-        let section_table_offset = u64::from_le_bytes(data[52..60].try_into().map_err(|_| RealityError::InvalidFormat("section_table_offset".into()))?);
+        let flags = u64::from_le_bytes(
+            data[8..16]
+                .try_into()
+                .map_err(|_| RealityError::InvalidFormat("flags".into()))?,
+        );
+        let incarnation_id: [u8; 16] = data[16..32]
+            .try_into()
+            .map_err(|_| RealityError::InvalidFormat("incarnation_id".into()))?;
+        let created = i64::from_le_bytes(
+            data[32..40]
+                .try_into()
+                .map_err(|_| RealityError::InvalidFormat("created".into()))?,
+        );
+        let modified = i64::from_le_bytes(
+            data[40..48]
+                .try_into()
+                .map_err(|_| RealityError::InvalidFormat("modified".into()))?,
+        );
+        let section_count = u32::from_le_bytes(
+            data[48..52]
+                .try_into()
+                .map_err(|_| RealityError::InvalidFormat("section_count".into()))?,
+        );
+        let section_table_offset = u64::from_le_bytes(
+            data[52..60]
+                .try_into()
+                .map_err(|_| RealityError::InvalidFormat("section_table_offset".into()))?,
+        );
         let compression = match data[60] {
             0 => Compression::None,
             1 => Compression::Lz4,
             2 => Compression::Zstd,
-            v => return Err(RealityError::InvalidFormat(format!("unknown compression: {}", v))),
+            v => {
+                return Err(RealityError::InvalidFormat(format!(
+                    "unknown compression: {}",
+                    v
+                )))
+            }
         };
-        let checksum: [u8; 8] = data[HEADER_SIZE-8..HEADER_SIZE].try_into()
+        let checksum: [u8; 8] = data[HEADER_SIZE - 8..HEADER_SIZE]
+            .try_into()
             .map_err(|_| RealityError::InvalidFormat("checksum".into()))?;
 
-        Ok(Self { magic, version, flags, incarnation_id, created, modified, section_count, section_table_offset, compression, checksum })
+        Ok(Self {
+            magic,
+            version,
+            flags,
+            incarnation_id,
+            created,
+            modified,
+            section_count,
+            section_table_offset,
+            compression,
+            checksum,
+        })
     }
 }

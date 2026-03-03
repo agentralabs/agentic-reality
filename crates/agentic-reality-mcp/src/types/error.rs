@@ -35,7 +35,9 @@ impl McpError {
 
     /// Convert a RealityError into an MCP tool execution error.
     pub fn from_reality(e: agentic_reality::types::error::RealityError) -> Self {
-        McpError::ToolExecutionError { message: e.to_string() }
+        McpError::ToolExecutionError {
+            message: e.to_string(),
+        }
     }
 }
 

@@ -27,7 +27,10 @@ fn test_require_string_wrong_type() {
 #[test]
 fn test_optional_string_present() {
     let params = json!({ "name": "test" });
-    assert_eq!(McpValidator::optional_string(&params, "name"), Some("test".to_string()));
+    assert_eq!(
+        McpValidator::optional_string(&params, "name"),
+        Some("test".to_string())
+    );
 }
 
 #[test]

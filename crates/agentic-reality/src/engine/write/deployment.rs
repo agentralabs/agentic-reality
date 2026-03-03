@@ -76,16 +76,29 @@ impl<'a> WriteEngine<'a> {
 
     /// Add a past incarnation.
     pub fn add_past_life(&mut self, past: PastIncarnation) -> RealityResult<()> {
-        let mem = self.engine.deployment_store.incarnation_memory.get_or_insert_with(|| {
-            IncarnationMemory {
-                current: self.engine.deployment_store.soul.as_ref().map(|s| s.incarnation_id).unwrap_or_else(IncarnationId::new),
+        let mem = self
+            .engine
+            .deployment_store
+            .incarnation_memory
+            .get_or_insert_with(|| IncarnationMemory {
+                current: self
+                    .engine
+                    .deployment_store
+                    .soul
+                    .as_ref()
+                    .map(|s| s.incarnation_id)
+                    .unwrap_or_default(),
                 past_lives: vec![],
                 total_incarnations: 0,
                 total_uptime_secs: 0,
                 wisdom: vec![],
-                karma: IncarnationKarma { score: 0.0, good_deeds: 0, incidents: 0, trend: KarmaTrend::Stable },
-            }
-        });
+                karma: IncarnationKarma {
+                    score: 0.0,
+                    good_deeds: 0,
+                    incidents: 0,
+                    trend: KarmaTrend::Stable,
+                },
+            });
         mem.past_lives.push(past);
         mem.total_incarnations += 1;
         self.engine.mark_dirty();

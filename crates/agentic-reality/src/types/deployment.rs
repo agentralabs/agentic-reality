@@ -33,11 +33,25 @@ pub struct BirthContext {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum BirthCircumstances {
     Virgin,
-    ScaledFrom { parent: IncarnationId },
-    Resurrected { death_cause: String, previous: IncarnationId },
-    Migrated { from_substrate: String, migration_reason: String },
-    Forked { from: IncarnationId, fork_reason: String },
-    Ephemeral { task_id: String, ttl: Duration },
+    ScaledFrom {
+        parent: IncarnationId,
+    },
+    Resurrected {
+        death_cause: String,
+        previous: IncarnationId,
+    },
+    Migrated {
+        from_substrate: String,
+        migration_reason: String,
+    },
+    Forked {
+        from: IncarnationId,
+        fork_reason: String,
+    },
+    Ephemeral {
+        task_id: String,
+        ttl: Duration,
+    },
 }
 
 /// Who spawned this agent.
@@ -95,15 +109,45 @@ pub struct PhysicalSubstrate {
 /// What kind of hardware/platform the agent runs on.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum SubstrateTier {
-    Laptop { owner: String, os: String },
-    Mobile { device_type: String, os_version: String },
-    Browser { browser: String, version: String },
-    Edge { region: String, pop: String, provider: String },
-    Cloud { provider: CloudProvider, instance_type: String, region: String },
-    BareMetal { specs: String, location: String },
-    GpuCluster { gpu_count: u32, gpu_type: String, interconnect: String },
-    Serverless { provider: String, memory_mb: u32, timeout: Duration },
-    Unknown { clues: Vec<String> },
+    Laptop {
+        owner: String,
+        os: String,
+    },
+    Mobile {
+        device_type: String,
+        os_version: String,
+    },
+    Browser {
+        browser: String,
+        version: String,
+    },
+    Edge {
+        region: String,
+        pop: String,
+        provider: String,
+    },
+    Cloud {
+        provider: CloudProvider,
+        instance_type: String,
+        region: String,
+    },
+    BareMetal {
+        specs: String,
+        location: String,
+    },
+    GpuCluster {
+        gpu_count: u32,
+        gpu_type: String,
+        interconnect: String,
+    },
+    Serverless {
+        provider: String,
+        memory_mb: u32,
+        timeout: Duration,
+    },
+    Unknown {
+        clues: Vec<String>,
+    },
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

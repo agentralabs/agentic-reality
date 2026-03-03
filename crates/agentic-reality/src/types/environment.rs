@@ -18,16 +18,46 @@ pub struct EnvironmentMedium {
 /// What kind of environment the agent operates in.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum EnvironmentType {
-    Production { tier: String, region: String, criticality: f64 },
-    Staging { mirrors_production: bool, data_freshness: String },
-    Development { developer: String, local: bool },
-    Testing { test_type: String, isolation: bool },
-    Pipeline { pipeline_id: String, stage: String },
-    Sandbox { owner: String, expires: Option<i64> },
-    Simulation { fidelity: String, purpose: String },
-    Preview { traffic_percentage: f64, rollback_ready: bool },
-    DisasterRecovery { is_active_failover: bool, primary_region: String },
-    Unknown { clues: Vec<String> },
+    Production {
+        tier: String,
+        region: String,
+        criticality: f64,
+    },
+    Staging {
+        mirrors_production: bool,
+        data_freshness: String,
+    },
+    Development {
+        developer: String,
+        local: bool,
+    },
+    Testing {
+        test_type: String,
+        isolation: bool,
+    },
+    Pipeline {
+        pipeline_id: String,
+        stage: String,
+    },
+    Sandbox {
+        owner: String,
+        expires: Option<i64>,
+    },
+    Simulation {
+        fidelity: String,
+        purpose: String,
+    },
+    Preview {
+        traffic_percentage: f64,
+        rollback_ready: bool,
+    },
+    DisasterRecovery {
+        is_active_failover: bool,
+        primary_region: String,
+    },
+    Unknown {
+        clues: Vec<String>,
+    },
 }
 
 /// Current state of the environment.

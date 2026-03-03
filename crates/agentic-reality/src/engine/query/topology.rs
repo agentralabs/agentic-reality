@@ -7,7 +7,10 @@ use crate::types::topology::*;
 
 impl<'a> QueryEngine<'a> {
     pub fn get_topology_map(&self) -> RealityResult<&DeploymentTopologyMap> {
-        self.engine.topology_store.topology.as_ref()
+        self.engine
+            .topology_store
+            .topology
+            .as_ref()
             .ok_or_else(|| RealityError::NotInitialized("topology".into()))
     }
 
@@ -25,7 +28,9 @@ impl<'a> QueryEngine<'a> {
 
     pub fn get_dependency(&self, id: &DependencyId) -> RealityResult<&DownstreamEntity> {
         let topo = self.get_topology_map()?;
-        topo.downstream.iter().find(|d| d.id == *id)
+        topo.downstream
+            .iter()
+            .find(|d| d.id == *id)
             .ok_or_else(|| RealityError::NotFound(format!("dependency {}", id)))
     }
 
@@ -46,7 +51,10 @@ impl<'a> QueryEngine<'a> {
     }
 
     pub fn get_single_points(&self) -> RealityResult<&[String]> {
-        Ok(&self.get_topology_map()?.topology_health.single_points_of_failure)
+        Ok(&self
+            .get_topology_map()?
+            .topology_health
+            .single_points_of_failure)
     }
 
     pub fn find_path(&self, _from: &str, _to: &str) -> RealityResult<Vec<String>> {
@@ -54,7 +62,10 @@ impl<'a> QueryEngine<'a> {
     }
 
     pub fn get_neighbor_awareness(&self) -> RealityResult<&NeighborAwareness> {
-        self.engine.topology_store.neighbors.as_ref()
+        self.engine
+            .topology_store
+            .neighbors
+            .as_ref()
             .ok_or_else(|| RealityError::NotInitialized("neighbor awareness".into()))
     }
 }

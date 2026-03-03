@@ -6,7 +6,10 @@ use crate::types::error::{RealityError, RealityResult};
 
 impl<'a> QueryEngine<'a> {
     pub fn get_environment(&self) -> RealityResult<&EnvironmentMedium> {
-        self.engine.environment_store.medium.as_ref()
+        self.engine
+            .environment_store
+            .medium
+            .as_ref()
             .ok_or_else(|| RealityError::NotInitialized("environment".into()))
     }
 
@@ -31,12 +34,18 @@ impl<'a> QueryEngine<'a> {
     }
 
     pub fn get_fingerprint(&self) -> RealityResult<&ContextFingerprint> {
-        self.engine.environment_store.fingerprint.as_ref()
+        self.engine
+            .environment_store
+            .fingerprint
+            .as_ref()
             .ok_or_else(|| RealityError::NotInitialized("context fingerprint".into()))
     }
 
     pub fn has_context_shifted(&self) -> bool {
-        self.engine.environment_store.fingerprint.as_ref()
+        self.engine
+            .environment_store
+            .fingerprint
+            .as_ref()
             .map(|f| f.stability != ContextStability::Stable)
             .unwrap_or(false)
     }

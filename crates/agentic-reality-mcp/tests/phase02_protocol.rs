@@ -2,9 +2,9 @@
 
 use agentic_reality_mcp::protocol::ProtocolHandler;
 use agentic_reality_mcp::session::SessionManager;
+use serde_json::json;
 use std::sync::Arc;
 use tokio::sync::Mutex;
-use serde_json::json;
 
 fn handler() -> ProtocolHandler {
     let session = Arc::new(Mutex::new(SessionManager::new()));
@@ -25,7 +25,10 @@ async fn test_initialize() {
     assert_eq!(response["id"], 1);
     assert!(response["result"]["protocolVersion"].is_string());
     assert!(response["result"]["capabilities"].is_object());
-    assert!(response["result"]["serverInfo"]["name"].as_str().unwrap().contains("reality"));
+    assert!(response["result"]["serverInfo"]["name"]
+        .as_str()
+        .unwrap()
+        .contains("reality"));
 }
 
 #[tokio::test]

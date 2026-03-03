@@ -116,7 +116,8 @@ mod tests {
         let level = LogLevel::Warning;
         let s = serde_json::to_string(&level);
         assert!(s.is_ok());
-        let parsed: Result<LogLevel, _> = serde_json::from_str(s.as_ref().map(|v| v.as_str()).unwrap_or(""));
+        let parsed: Result<LogLevel, _> =
+            serde_json::from_str(s.as_ref().map(|v| v.as_str()).unwrap_or(""));
         assert!(parsed.is_ok());
         assert_eq!(parsed.unwrap_or(LogLevel::Debug), LogLevel::Warning);
     }

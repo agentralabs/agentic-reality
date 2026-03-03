@@ -15,9 +15,12 @@ impl<'a> WriteEngine<'a> {
 
     /// Update a specific layer status.
     pub fn update_layer_status(&mut self, status: LayerStatus) -> RealityResult<()> {
-        let layers = self.engine.reality_store.layers.as_mut().ok_or_else(|| {
-            RealityError::NotInitialized("reality layers".into())
-        })?;
+        let layers = self
+            .engine
+            .reality_store
+            .layers
+            .as_mut()
+            .ok_or_else(|| RealityError::NotInitialized("reality layers".into()))?;
         layers.layers.push(status);
         self.engine.mark_dirty();
         Ok(())
@@ -51,7 +54,12 @@ impl<'a> WriteEngine<'a> {
 
     /// Verify an anchor and update its value.
     pub fn verify_anchor(&mut self, id: &AnchorId, value: AnchorValue) -> RealityResult<()> {
-        let anchor = self.engine.reality_store.anchors.iter_mut().find(|a| a.id == *id)
+        let anchor = self
+            .engine
+            .reality_store
+            .anchors
+            .iter_mut()
+            .find(|a| a.id == *id)
             .ok_or_else(|| RealityError::NotFound(format!("anchor {}", id)))?;
         anchor.last_value = value;
         self.engine.mark_dirty();
@@ -66,19 +74,27 @@ impl<'a> WriteEngine<'a> {
     }
 
     /// Detect a hallucination.
-    pub fn detect_hallucination(&mut self, hallucination: DetectedHallucination) -> RealityResult<()> {
-        let state = self.engine.reality_store.hallucination_state.get_or_insert_with(|| {
-            HallucinationState {
+    pub fn detect_hallucination(
+        &mut self,
+        hallucination: DetectedHallucination,
+    ) -> RealityResult<()> {
+        let state = self
+            .engine
+            .reality_store
+            .hallucination_state
+            .get_or_insert_with(|| HallucinationState {
                 risk_level: HallucinationRisk::Low { confidence: 1.0 },
                 detected: vec![],
                 patterns: vec![],
                 grounding: GroundingStatus {
-                    grounded: true, anchor_count: 0, verified_count: 0,
-                    last_verification: None, confidence: 1.0,
+                    grounded: true,
+                    anchor_count: 0,
+                    verified_count: 0,
+                    last_verification: None,
+                    confidence: 1.0,
                 },
                 pending_verification: vec![],
-            }
-        });
+            });
         state.detected.push(hallucination);
         self.engine.mark_dirty();
         Ok(())
@@ -97,18 +113,23 @@ impl<'a> WriteEngine<'a> {
 
     /// Add an unverified claim.
     pub fn add_unverified_claim(&mut self, claim: UnverifiedClaim) -> RealityResult<()> {
-        let state = self.engine.reality_store.hallucination_state.get_or_insert_with(|| {
-            HallucinationState {
+        let state = self
+            .engine
+            .reality_store
+            .hallucination_state
+            .get_or_insert_with(|| HallucinationState {
                 risk_level: HallucinationRisk::Low { confidence: 1.0 },
                 detected: vec![],
                 patterns: vec![],
                 grounding: GroundingStatus {
-                    grounded: true, anchor_count: 0, verified_count: 0,
-                    last_verification: None, confidence: 1.0,
+                    grounded: true,
+                    anchor_count: 0,
+                    verified_count: 0,
+                    last_verification: None,
+                    confidence: 1.0,
                 },
                 pending_verification: vec![],
-            }
-        });
+            });
         state.pending_verification.push(claim);
         self.engine.mark_dirty();
         Ok(())

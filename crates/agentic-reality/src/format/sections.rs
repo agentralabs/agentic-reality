@@ -29,7 +29,10 @@ impl SectionType {
             0x0007 => Ok(Self::Stakes),
             0x0008 => Ok(Self::Coherence),
             0x0009 => Ok(Self::Indexes),
-            _ => Err(RealityError::InvalidFormat(format!("unknown section type: 0x{:04X}", v))),
+            _ => Err(RealityError::InvalidFormat(format!(
+                "unknown section type: 0x{:04X}",
+                v
+            ))),
         }
     }
 }
@@ -60,15 +63,46 @@ impl SectionEntry {
 
     pub fn read_from(data: &[u8]) -> RealityResult<Self> {
         if data.len() < SECTION_ENTRY_SIZE {
-            return Err(RealityError::InvalidFormat("section entry too short".into()));
+            return Err(RealityError::InvalidFormat(
+                "section entry too short".into(),
+            ));
         }
-        let section_type = SectionType::from_u16(u16::from_le_bytes(data[0..2].try_into().map_err(|_| RealityError::InvalidFormat("section_type".into()))?))?;
-        let flags = u16::from_le_bytes(data[2..4].try_into().map_err(|_| RealityError::InvalidFormat("flags".into()))?);
-        let offset = u64::from_le_bytes(data[4..12].try_into().map_err(|_| RealityError::InvalidFormat("offset".into()))?);
-        let length = u64::from_le_bytes(data[12..20].try_into().map_err(|_| RealityError::InvalidFormat("length".into()))?);
-        let uncompressed_length = u64::from_le_bytes(data[20..28].try_into().map_err(|_| RealityError::InvalidFormat("uncompressed_length".into()))?);
-        let checksum: [u8; 8] = data[28..36].try_into().map_err(|_| RealityError::InvalidFormat("checksum".into()))?;
+        let section_type = SectionType::from_u16(u16::from_le_bytes(
+            data[0..2]
+                .try_into()
+                .map_err(|_| RealityError::InvalidFormat("section_type".into()))?,
+        ))?;
+        let flags = u16::from_le_bytes(
+            data[2..4]
+                .try_into()
+                .map_err(|_| RealityError::InvalidFormat("flags".into()))?,
+        );
+        let offset = u64::from_le_bytes(
+            data[4..12]
+                .try_into()
+                .map_err(|_| RealityError::InvalidFormat("offset".into()))?,
+        );
+        let length = u64::from_le_bytes(
+            data[12..20]
+                .try_into()
+                .map_err(|_| RealityError::InvalidFormat("length".into()))?,
+        );
+        let uncompressed_length = u64::from_le_bytes(
+            data[20..28]
+                .try_into()
+                .map_err(|_| RealityError::InvalidFormat("uncompressed_length".into()))?,
+        );
+        let checksum: [u8; 8] = data[28..36]
+            .try_into()
+            .map_err(|_| RealityError::InvalidFormat("checksum".into()))?;
 
-        Ok(Self { section_type, flags, offset, length, uncompressed_length, checksum })
+        Ok(Self {
+            section_type,
+            flags,
+            offset,
+            length,
+            uncompressed_length,
+            checksum,
+        })
     }
 }

@@ -68,7 +68,10 @@ impl RealityEngine {
 
     /// Get the current incarnation ID if initialized.
     pub fn incarnation_id(&self) -> Option<IncarnationId> {
-        self.deployment_store.soul.as_ref().map(|s| s.incarnation_id)
+        self.deployment_store
+            .soul
+            .as_ref()
+            .map(|s| s.incarnation_id)
     }
 
     /// Check if the engine has been initialized with a deployment soul.

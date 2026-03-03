@@ -35,16 +35,24 @@ impl ArealFooter {
         }
         let start = data.len() - FOOTER_SIZE;
         let footer_data = &data[start..];
-        let global_checksum: [u8; 32] = footer_data[0..32].try_into()
+        let global_checksum: [u8; 32] = footer_data[0..32]
+            .try_into()
             .map_err(|_| RealityError::InvalidFormat("global checksum".into()))?;
         let sections_verified = footer_data[32];
-        let reserved: [u8; 23] = footer_data[33..56].try_into()
+        let reserved: [u8; 23] = footer_data[33..56]
+            .try_into()
             .map_err(|_| RealityError::InvalidFormat("reserved".into()))?;
-        let magic: [u8; 8] = footer_data[56..64].try_into()
+        let magic: [u8; 8] = footer_data[56..64]
+            .try_into()
             .map_err(|_| RealityError::InvalidFormat("footer magic".into()))?;
         if magic != FOOTER_MAGIC {
             return Err(RealityError::InvalidFormat("invalid footer magic".into()));
         }
-        Ok(Self { global_checksum, sections_verified, reserved, magic })
+        Ok(Self {
+            global_checksum,
+            sections_verified,
+            reserved,
+            magic,
+        })
     }
 }

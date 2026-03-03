@@ -38,21 +38,15 @@ pub struct ClientCapabilities {
 }
 
 /// Tool capability descriptor.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ToolCapability {
     /// Whether the server emits tools/list_changed notifications.
     #[serde(rename = "listChanged", default)]
     pub list_changed: bool,
 }
 
-impl Default for ToolCapability {
-    fn default() -> Self {
-        Self { list_changed: false }
-    }
-}
-
 /// Resource capability descriptor.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ResourceCapability {
     /// Whether the client can subscribe to resource changes.
     #[serde(default)]
@@ -62,27 +56,12 @@ pub struct ResourceCapability {
     pub list_changed: bool,
 }
 
-impl Default for ResourceCapability {
-    fn default() -> Self {
-        Self {
-            subscribe: false,
-            list_changed: false,
-        }
-    }
-}
-
 /// Prompt capability descriptor.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct PromptCapability {
     /// Whether the server emits prompts/list_changed notifications.
     #[serde(rename = "listChanged", default)]
     pub list_changed: bool,
-}
-
-impl Default for PromptCapability {
-    fn default() -> Self {
-        Self { list_changed: false }
-    }
 }
 
 #[cfg(test)]

@@ -28,15 +28,21 @@ impl AuthManager {
         }
         match &self.token {
             Some(expected) => {
-                if constant_time_eq::constant_time_eq(expected.as_bytes(), provided_token.as_bytes()) {
+                if constant_time_eq::constant_time_eq(
+                    expected.as_bytes(),
+                    provided_token.as_bytes(),
+                ) {
                     self.failed_attempts = 0;
                     let session_id = uuid::Uuid::new_v4().to_string();
-                    self.sessions.insert(session_id.clone(), SessionBinding {
-                        session_id: session_id.clone(),
-                        created_at: chrono::Utc::now().timestamp(),
-                        last_activity: chrono::Utc::now().timestamp(),
-                        permissions: Permissions::default(),
-                    });
+                    self.sessions.insert(
+                        session_id.clone(),
+                        SessionBinding {
+                            session_id: session_id.clone(),
+                            created_at: chrono::Utc::now().timestamp(),
+                            last_activity: chrono::Utc::now().timestamp(),
+                            permissions: Permissions::default(),
+                        },
+                    );
                     Ok(session_id)
                 } else {
                     self.failed_attempts += 1;
@@ -93,13 +99,20 @@ pub struct Permissions {
 impl Default for Permissions {
     fn default() -> Self {
         Self {
-            deployment_read: true, deployment_write: true,
-            environment_read: true, environment_write: true,
-            resource_read: true, resource_write: true,
-            reality_read: true, reality_write: true,
-            topology_read: true, topology_write: true,
-            temporal_read: true, temporal_write: true,
-            stakes_read: true, stakes_write: true,
+            deployment_read: true,
+            deployment_write: true,
+            environment_read: true,
+            environment_write: true,
+            resource_read: true,
+            resource_write: true,
+            reality_read: true,
+            reality_write: true,
+            topology_read: true,
+            topology_write: true,
+            temporal_read: true,
+            temporal_write: true,
+            stakes_read: true,
+            stakes_write: true,
             admin: false,
         }
     }
@@ -125,7 +138,11 @@ impl AuditLogger {
                 "session": session,
                 "success": success,
             });
-            if let Ok(mut file) = std::fs::OpenOptions::new().create(true).append(true).open(path) {
+            if let Ok(mut file) = std::fs::OpenOptions::new()
+                .create(true)
+                .append(true)
+                .open(path)
+            {
                 use std::io::Write;
                 let _ = writeln!(file, "{}", entry);
             }

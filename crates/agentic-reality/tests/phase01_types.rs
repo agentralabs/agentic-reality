@@ -1,14 +1,14 @@
 //! Phase 01: Type system tests.
 
-use agentic_reality::types::ids::*;
+use agentic_reality::types::coherence::*;
 use agentic_reality::types::deployment::*;
 use agentic_reality::types::environment::*;
-use agentic_reality::types::resource::*;
-use agentic_reality::types::reality::*;
-use agentic_reality::types::topology::*;
-use agentic_reality::types::stakes::*;
-use agentic_reality::types::coherence::*;
 use agentic_reality::types::error::*;
+use agentic_reality::types::ids::*;
+use agentic_reality::types::reality::*;
+use agentic_reality::types::resource::*;
+use agentic_reality::types::stakes::*;
+use agentic_reality::types::topology::*;
 
 // === ID Tests ===
 
@@ -136,14 +136,22 @@ fn test_cardinality_replica() {
 
 #[test]
 fn test_death_cause_variants() {
-    assert!(matches!(DeathCause::GracefulShutdown, DeathCause::GracefulShutdown));
+    assert!(matches!(
+        DeathCause::GracefulShutdown,
+        DeathCause::GracefulShutdown
+    ));
     assert!(matches!(DeathCause::Oom, DeathCause::Oom));
     assert!(matches!(DeathCause::Partitioned, DeathCause::Partitioned));
 }
 
 #[test]
 fn test_karma_trend() {
-    let k = IncarnationKarma { score: 0.8, good_deeds: 10, incidents: 2, trend: KarmaTrend::Improving };
+    let k = IncarnationKarma {
+        score: 0.8,
+        good_deeds: 10,
+        incidents: 2,
+        trend: KarmaTrend::Improving,
+    };
     assert_eq!(k.score, 0.8);
     assert!(matches!(k.trend, KarmaTrend::Improving));
 }
@@ -203,15 +211,24 @@ fn test_cost_feeling_variants() {
 
 #[test]
 fn test_capability_category_variants() {
-    assert!(matches!(CapabilityCategory::Compute, CapabilityCategory::Compute));
-    assert!(matches!(CapabilityCategory::MachineLearning, CapabilityCategory::MachineLearning));
+    assert!(matches!(
+        CapabilityCategory::Compute,
+        CapabilityCategory::Compute
+    ));
+    assert!(matches!(
+        CapabilityCategory::MachineLearning,
+        CapabilityCategory::MachineLearning
+    ));
 }
 
 // === Reality Type Tests ===
 
 #[test]
 fn test_reality_layer_variants() {
-    let layer = RealityLayer::Physical { substrate: "bare-metal".into(), certainty: 0.99 };
+    let layer = RealityLayer::Physical {
+        substrate: "bare-metal".into(),
+        certainty: 0.99,
+    };
     assert!(matches!(layer, RealityLayer::Physical { .. }));
 }
 
@@ -228,13 +245,21 @@ fn test_freshness_level_live() {
 
 #[test]
 fn test_hallucination_type_variants() {
-    assert!(matches!(HallucinationType::FactualError, HallucinationType::FactualError));
-    assert!(matches!(HallucinationType::Confabulation, HallucinationType::Confabulation));
+    assert!(matches!(
+        HallucinationType::FactualError,
+        HallucinationType::FactualError
+    ));
+    assert!(matches!(
+        HallucinationType::Confabulation,
+        HallucinationType::Confabulation
+    ));
 }
 
 #[test]
 fn test_anchor_type_time() {
-    let anchor = AnchorType::Time { source: "ntp".into() };
+    let anchor = AnchorType::Time {
+        source: "ntp".into(),
+    };
     assert!(matches!(anchor, AnchorType::Time { .. }));
 }
 
@@ -269,9 +294,15 @@ fn test_observer_type_variants() {
 
 #[test]
 fn test_stakes_level_display() {
-    let level = StakesLevel::Minimal { can_experiment: true };
+    let level = StakesLevel::Minimal {
+        can_experiment: true,
+    };
     assert_eq!(level.to_string(), "minimal");
-    let level = StakesLevel::Critical { multiple_approvals: true, audit_required: true, no_risk_tolerance: true };
+    let level = StakesLevel::Critical {
+        multiple_approvals: true,
+        audit_required: true,
+        no_risk_tolerance: true,
+    };
     assert_eq!(level.to_string(), "critical");
 }
 
@@ -284,7 +315,10 @@ fn test_severity_variants() {
 #[test]
 fn test_reversibility_variants() {
     assert!(matches!(Reversibility::Easy, Reversibility::Easy));
-    assert!(matches!(Reversibility::Irreversible, Reversibility::Irreversible));
+    assert!(matches!(
+        Reversibility::Irreversible,
+        Reversibility::Irreversible
+    ));
 }
 
 #[test]
@@ -310,7 +344,10 @@ fn test_coherence_check_type_display() {
 
 #[test]
 fn test_transition_type_display() {
-    assert_eq!(TransitionType::EnvironmentChange.to_string(), "environment_change");
+    assert_eq!(
+        TransitionType::EnvironmentChange.to_string(),
+        "environment_change"
+    );
     assert_eq!(TransitionType::Failover.to_string(), "failover");
 }
 
@@ -360,7 +397,10 @@ fn test_environment_mood_serialization() {
 
 #[test]
 fn test_stakes_level_serialization() {
-    let level = StakesLevel::High { caution_required: true, approval_needed: true };
+    let level = StakesLevel::High {
+        caution_required: true,
+        approval_needed: true,
+    };
     let json = serde_json::to_string(&level).unwrap();
     let deserialized: StakesLevel = serde_json::from_str(&json).unwrap();
     assert_eq!(deserialized.to_string(), "high");

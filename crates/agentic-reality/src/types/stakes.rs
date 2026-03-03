@@ -16,11 +16,24 @@ pub struct ConsequenceAwareness {
 /// Level of stakes for the current context.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum StakesLevel {
-    Minimal { can_experiment: bool },
-    Low { rollback_available: bool },
-    Medium { review_recommended: bool },
-    High { caution_required: bool, approval_needed: bool },
-    Critical { multiple_approvals: bool, audit_required: bool, no_risk_tolerance: bool },
+    Minimal {
+        can_experiment: bool,
+    },
+    Low {
+        rollback_available: bool,
+    },
+    Medium {
+        review_recommended: bool,
+    },
+    High {
+        caution_required: bool,
+        approval_needed: bool,
+    },
+    Critical {
+        multiple_approvals: bool,
+        audit_required: bool,
+        no_risk_tolerance: bool,
+    },
 }
 
 impl std::fmt::Display for StakesLevel {

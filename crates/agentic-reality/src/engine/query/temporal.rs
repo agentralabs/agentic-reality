@@ -7,18 +7,28 @@ use crate::types::temporal::*;
 
 impl<'a> QueryEngine<'a> {
     pub fn get_temporal_context(&self) -> RealityResult<&TemporalContext> {
-        let awareness = self.engine.temporal_store.awareness.as_ref()
+        let awareness = self
+            .engine
+            .temporal_store
+            .awareness
+            .as_ref()
             .ok_or_else(|| RealityError::NotInitialized("temporal awareness".into()))?;
         Ok(&awareness.context)
     }
 
     pub fn get_grounded_time(&self) -> RealityResult<&TemporalAwareness> {
-        self.engine.temporal_store.awareness.as_ref()
+        self.engine
+            .temporal_store
+            .awareness
+            .as_ref()
             .ok_or_else(|| RealityError::NotInitialized("temporal awareness".into()))
     }
 
     pub fn get_causality_graph(&self) -> RealityResult<&CausalityGraph> {
-        self.engine.temporal_store.causality.as_ref()
+        self.engine
+            .temporal_store
+            .causality
+            .as_ref()
             .ok_or_else(|| RealityError::NotInitialized("causality graph".into()))
     }
 
@@ -60,7 +70,9 @@ impl<'a> QueryEngine<'a> {
             timelines: timelines.iter().map(|t| t.id).collect(),
             merged_events: merged,
             unresolved_conflicts: conflicts,
-            coherence_score: if timelines.is_empty() { 1.0 } else {
+            coherence_score: if timelines.is_empty() {
+                1.0
+            } else {
                 timelines.iter().filter(|t| t.coherent).count() as f64 / timelines.len() as f64
             },
         }

@@ -68,8 +68,7 @@ impl SessionManager {
             std::fs::create_dir_all(parent).map_err(|e| SessionError::Io(e.to_string()))?;
         }
 
-        ArealWriter::save(&self.engine, &path)
-            .map_err(|e| SessionError::Save(e.to_string()))?;
+        ArealWriter::save(&self.engine, &path).map_err(|e| SessionError::Save(e.to_string()))?;
 
         self.engine.mark_clean();
         Ok(true)
@@ -89,8 +88,7 @@ impl SessionManager {
             return Ok(false);
         }
 
-        let engine = ArealReader::load(&path)
-            .map_err(|e| SessionError::Load(e.to_string()))?;
+        let engine = ArealReader::load(&path).map_err(|e| SessionError::Load(e.to_string()))?;
 
         self.engine = engine;
         Ok(true)

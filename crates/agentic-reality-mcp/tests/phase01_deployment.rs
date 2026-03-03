@@ -1,10 +1,10 @@
 //! Phase 01: MCP deployment tool tests.
 
-use agentic_reality_mcp::tools::registry::ToolRegistry;
 use agentic_reality_mcp::session::SessionManager;
+use agentic_reality_mcp::tools::registry::ToolRegistry;
+use serde_json::json;
 use std::sync::Arc;
 use tokio::sync::Mutex;
-use serde_json::json;
 
 fn session() -> Arc<Mutex<SessionManager>> {
     Arc::new(Mutex::new(SessionManager::new()))
@@ -13,49 +13,64 @@ fn session() -> Arc<Mutex<SessionManager>> {
 #[tokio::test]
 async fn test_deployment_get_uninitalized() {
     let s = session();
-    let result = ToolRegistry::call("reality_deployment", Some(json!({"operation": "get"})), &s).await;
+    let result =
+        ToolRegistry::call("reality_deployment", Some(json!({"operation": "get"})), &s).await;
     assert!(result.is_ok());
 }
 
 #[tokio::test]
 async fn test_deployment_summary() {
     let s = session();
-    let result = ToolRegistry::call("reality_deployment", Some(json!({"operation": "summary"})), &s).await;
+    let result = ToolRegistry::call(
+        "reality_deployment",
+        Some(json!({"operation": "summary"})),
+        &s,
+    )
+    .await;
     assert!(result.is_ok());
 }
 
 #[tokio::test]
 async fn test_deployment_unknown_operation() {
     let s = session();
-    let result = ToolRegistry::call("reality_deployment", Some(json!({"operation": "fly"})), &s).await;
+    let result =
+        ToolRegistry::call("reality_deployment", Some(json!({"operation": "fly"})), &s).await;
     assert!(result.is_ok()); // Returns isError in result, not Err
 }
 
 #[tokio::test]
 async fn test_environment_get() {
     let s = session();
-    let result = ToolRegistry::call("reality_environment", Some(json!({"operation": "get"})), &s).await;
+    let result =
+        ToolRegistry::call("reality_environment", Some(json!({"operation": "get"})), &s).await;
     assert!(result.is_ok());
 }
 
 #[tokio::test]
 async fn test_environment_mood() {
     let s = session();
-    let result = ToolRegistry::call("reality_environment", Some(json!({"operation": "mood"})), &s).await;
+    let result = ToolRegistry::call(
+        "reality_environment",
+        Some(json!({"operation": "mood"})),
+        &s,
+    )
+    .await;
     assert!(result.is_ok());
 }
 
 #[tokio::test]
 async fn test_resource_get() {
     let s = session();
-    let result = ToolRegistry::call("reality_resource", Some(json!({"operation": "get"})), &s).await;
+    let result =
+        ToolRegistry::call("reality_resource", Some(json!({"operation": "get"})), &s).await;
     assert!(result.is_ok());
 }
 
 #[tokio::test]
 async fn test_capability_list() {
     let s = session();
-    let result = ToolRegistry::call("reality_capability", Some(json!({"operation": "list"})), &s).await;
+    let result =
+        ToolRegistry::call("reality_capability", Some(json!({"operation": "list"})), &s).await;
     assert!(result.is_ok());
 }
 
@@ -76,21 +91,28 @@ async fn test_anchor_list() {
 #[tokio::test]
 async fn test_hallucination_get() {
     let s = session();
-    let result = ToolRegistry::call("reality_hallucination", Some(json!({"operation": "get"})), &s).await;
+    let result = ToolRegistry::call(
+        "reality_hallucination",
+        Some(json!({"operation": "get"})),
+        &s,
+    )
+    .await;
     assert!(result.is_ok());
 }
 
 #[tokio::test]
 async fn test_topology_get() {
     let s = session();
-    let result = ToolRegistry::call("reality_topology", Some(json!({"operation": "get"})), &s).await;
+    let result =
+        ToolRegistry::call("reality_topology", Some(json!({"operation": "get"})), &s).await;
     assert!(result.is_ok());
 }
 
 #[tokio::test]
 async fn test_temporal_get() {
     let s = session();
-    let result = ToolRegistry::call("reality_temporal", Some(json!({"operation": "get"})), &s).await;
+    let result =
+        ToolRegistry::call("reality_temporal", Some(json!({"operation": "get"})), &s).await;
     assert!(result.is_ok());
 }
 
@@ -104,21 +126,24 @@ async fn test_stakes_get() {
 #[tokio::test]
 async fn test_coherence_get() {
     let s = session();
-    let result = ToolRegistry::call("reality_coherence", Some(json!({"operation": "get"})), &s).await;
+    let result =
+        ToolRegistry::call("reality_coherence", Some(json!({"operation": "get"})), &s).await;
     assert!(result.is_ok());
 }
 
 #[tokio::test]
 async fn test_coherence_check() {
     let s = session();
-    let result = ToolRegistry::call("reality_coherence", Some(json!({"operation": "check"})), &s).await;
+    let result =
+        ToolRegistry::call("reality_coherence", Some(json!({"operation": "check"})), &s).await;
     assert!(result.is_ok());
 }
 
 #[tokio::test]
 async fn test_context_summary() {
     let s = session();
-    let result = ToolRegistry::call("reality_context", Some(json!({"operation": "summary"})), &s).await;
+    let result =
+        ToolRegistry::call("reality_context", Some(json!({"operation": "summary"})), &s).await;
     assert!(result.is_ok());
 }
 
@@ -132,14 +157,16 @@ async fn test_context_get() {
 #[tokio::test]
 async fn test_ground_status() {
     let s = session();
-    let result = ToolRegistry::call("reality_ground", Some(json!({"operation": "status"})), &s).await;
+    let result =
+        ToolRegistry::call("reality_ground", Some(json!({"operation": "status"})), &s).await;
     assert!(result.is_ok());
 }
 
 #[tokio::test]
 async fn test_workspace_info() {
     let s = session();
-    let result = ToolRegistry::call("reality_workspace", Some(json!({"operation": "info"})), &s).await;
+    let result =
+        ToolRegistry::call("reality_workspace", Some(json!({"operation": "info"})), &s).await;
     assert!(result.is_ok());
 }
 

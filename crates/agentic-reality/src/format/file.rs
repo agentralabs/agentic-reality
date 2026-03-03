@@ -16,7 +16,8 @@ pub struct ArealWriter;
 impl ArealWriter {
     /// Save a reality engine to a .areal file.
     pub fn save(engine: &RealityEngine, path: &Path) -> RealityResult<()> {
-        let incarnation_bytes = engine.incarnation_id()
+        let incarnation_bytes = engine
+            .incarnation_id()
             .map(|id| *id.as_uuid().as_bytes())
             .unwrap_or([0u8; 16]);
 

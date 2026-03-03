@@ -4,16 +4,39 @@ use agentic_reality_mcp::types::error::*;
 
 #[test]
 fn test_mcp_error_codes() {
-    assert_eq!(McpError::MethodNotFound { method: "x".into() }.code(), -32601);
-    assert_eq!(McpError::InvalidParams { message: "x".into() }.code(), -32602);
+    assert_eq!(
+        McpError::MethodNotFound { method: "x".into() }.code(),
+        -32601
+    );
+    assert_eq!(
+        McpError::InvalidParams {
+            message: "x".into()
+        }
+        .code(),
+        -32602
+    );
     assert_eq!(McpError::ToolNotFound { tool: "x".into() }.code(), -32803);
-    assert_eq!(McpError::ToolExecutionError { message: "x".into() }.code(), -32000);
-    assert_eq!(McpError::InternalError { message: "x".into() }.code(), -32603);
+    assert_eq!(
+        McpError::ToolExecutionError {
+            message: "x".into()
+        }
+        .code(),
+        -32000
+    );
+    assert_eq!(
+        McpError::InternalError {
+            message: "x".into()
+        }
+        .code(),
+        -32603
+    );
 }
 
 #[test]
 fn test_tool_not_found_code_is_32803() {
-    let err = McpError::ToolNotFound { tool: "nonexistent".into() };
+    let err = McpError::ToolNotFound {
+        tool: "nonexistent".into(),
+    };
     assert_eq!(err.code(), -32803);
     assert!(err.to_string().contains("nonexistent"));
 }
@@ -72,12 +95,16 @@ fn test_tool_content_type() {
 
 #[test]
 fn test_error_display() {
-    let err = McpError::ToolExecutionError { message: "timeout".into() };
+    let err = McpError::ToolExecutionError {
+        message: "timeout".into(),
+    };
     assert!(err.to_string().contains("timeout"));
 }
 
 #[test]
 fn test_method_not_found_display() {
-    let err = McpError::MethodNotFound { method: "foo/bar".into() };
+    let err = McpError::MethodNotFound {
+        method: "foo/bar".into(),
+    };
     assert!(err.to_string().contains("foo/bar"));
 }

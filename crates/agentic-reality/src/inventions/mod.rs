@@ -1,40 +1,40 @@
 //! 26 inventions — the core innovations of AgenticReality.
 
 // Tier 1: Deployment Consciousness
+pub mod context_fingerprint;
 pub mod deployment_soul;
 pub mod environment_sensing;
 pub mod incarnation_memory;
-pub mod context_fingerprint;
 pub mod topology_map;
 
 // Tier 2: Resource Proprioception
-pub mod resource_body;
 pub mod capability_discovery;
-pub mod pressure_gradient;
-pub mod cost_consciousness;
 pub mod capacity_intuition;
+pub mod cost_consciousness;
+pub mod pressure_gradient;
+pub mod resource_body;
 
 // Tier 3: Reality Physics
-pub mod reality_layers;
 pub mod freshness;
-pub mod reality_anchors;
 pub mod hallucination;
+pub mod reality_anchors;
+pub mod reality_layers;
 
 // Tier 4: Topology Awareness
-pub mod service_mesh;
-pub mod neighbors;
 pub mod dependencies;
+pub mod neighbors;
 pub mod observers;
+pub mod service_mesh;
 
 // Tier 5: Temporal Grounding
-pub mod temporal_awareness;
 pub mod causality;
+pub mod temporal_awareness;
 pub mod timeline_coherence;
 
 // Tier 6: Stakes Perception
+pub mod blast_radius;
 pub mod consequences;
 pub mod risk_field;
-pub mod blast_radius;
 
 // Tier 7: Coherence Maintenance
 pub mod coherence_engine;

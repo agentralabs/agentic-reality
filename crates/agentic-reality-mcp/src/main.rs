@@ -15,7 +15,11 @@ use agentic_reality_mcp::session::SessionManager;
 
 /// AgenticReality MCP Server — existential grounding for AI agents.
 #[derive(Parser)]
-#[command(name = "agentic-reality-mcp", version, about = "MCP server for AgenticReality")]
+#[command(
+    name = "agentic-reality-mcp",
+    version,
+    about = "MCP server for AgenticReality"
+)]
 struct Cli {
     /// Server mode: stdio or http
     #[arg(long, default_value = "stdio")]
@@ -58,7 +62,10 @@ fn main() {
             }
         }
         "http" => {
-            tracing::info!(port = server_config.port, "HTTP/SSE mode not yet implemented");
+            tracing::info!(
+                port = server_config.port,
+                "HTTP/SSE mode not yet implemented"
+            );
             eprintln!(
                 "AgenticReality MCP server: HTTP mode on port {} (not yet implemented)",
                 server_config.port
@@ -66,7 +73,10 @@ fn main() {
         }
         other => {
             tracing::error!(mode = %other, "unknown server mode");
-            eprintln!("error: unknown mode '{}', expected 'stdio' or 'http'", other);
+            eprintln!(
+                "error: unknown mode '{}', expected 'stdio' or 'http'",
+                other
+            );
             std::process::exit(1);
         }
     }
@@ -110,9 +120,7 @@ fn run_stdio(config: &ServerConfig) -> Result<(), Box<dyn std::error::Error>> {
         if let Some(ref dir) = config.data_dir {
             let data_path = config::resolve_data_path(Some(dir));
             let areal_path = data_path.join("reality.areal");
-            session = SessionManager::with_path(
-                areal_path.to_string_lossy().to_string(),
-            );
+            session = SessionManager::with_path(areal_path.to_string_lossy().to_string());
             session.set_autosave(config.autosave);
 
             // Attempt to load existing session data

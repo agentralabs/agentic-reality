@@ -65,32 +65,56 @@ pub struct JsonRpcError {
 impl JsonRpcError {
     /// Standard parse error.
     pub fn parse_error(msg: String) -> Self {
-        Self { code: -32700, message: msg, data: None }
+        Self {
+            code: -32700,
+            message: msg,
+            data: None,
+        }
     }
 
     /// Standard invalid request.
     pub fn invalid_request(msg: String) -> Self {
-        Self { code: -32600, message: msg, data: None }
+        Self {
+            code: -32600,
+            message: msg,
+            data: None,
+        }
     }
 
     /// Standard method not found.
     pub fn method_not_found(method: &str) -> Self {
-        Self { code: -32601, message: format!("Method not found: {}", method), data: None }
+        Self {
+            code: -32601,
+            message: format!("Method not found: {}", method),
+            data: None,
+        }
     }
 
     /// Standard invalid params.
     pub fn invalid_params(msg: String) -> Self {
-        Self { code: -32602, message: msg, data: None }
+        Self {
+            code: -32602,
+            message: msg,
+            data: None,
+        }
     }
 
     /// Standard internal error.
     pub fn internal_error(msg: String) -> Self {
-        Self { code: -32603, message: msg, data: None }
+        Self {
+            code: -32603,
+            message: msg,
+            data: None,
+        }
     }
 
     /// Tool not found (MCP-specific code).
     pub fn tool_not_found(tool: &str) -> Self {
-        Self { code: -32803, message: format!("Tool not found: {}", tool), data: None }
+        Self {
+            code: -32803,
+            message: format!("Tool not found: {}", tool),
+            data: None,
+        }
     }
 }
 

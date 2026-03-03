@@ -26,7 +26,10 @@ impl RequestValidator {
         };
 
         // Validate tool name characters — must be ASCII alphanumeric or underscore
-        if !tool_name.chars().all(|c| c.is_ascii_alphanumeric() || c == '_') {
+        if !tool_name
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || c == '_')
+        {
             return Err(McpError::InvalidParams {
                 message: format!("invalid tool name: {}", tool_name),
             });

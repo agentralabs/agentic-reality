@@ -5,7 +5,13 @@ use agentic_reality_mcp::tools::registry::{ToolRegistry, MCP_TOOL_COUNT};
 #[test]
 fn test_mcp_tool_count_exactly_15() {
     let tools = ToolRegistry::list_tools();
-    assert_eq!(tools.len(), MCP_TOOL_COUNT, "Expected exactly {} MCP tools, got {}", MCP_TOOL_COUNT, tools.len());
+    assert_eq!(
+        tools.len(),
+        MCP_TOOL_COUNT,
+        "Expected exactly {} MCP tools, got {}",
+        MCP_TOOL_COUNT,
+        tools.len()
+    );
     assert_eq!(tools.len(), 15);
 }
 
@@ -21,7 +27,11 @@ fn test_all_tools_have_names() {
 fn test_all_tools_have_descriptions() {
     let tools = ToolRegistry::list_tools();
     for tool in &tools {
-        assert!(!tool.description.is_empty(), "Tool '{}' has empty description", tool.name);
+        assert!(
+            !tool.description.is_empty(),
+            "Tool '{}' has empty description",
+            tool.name
+        );
     }
 }
 
@@ -38,7 +48,12 @@ fn test_tool_descriptions_verb_first() {
     let tools = ToolRegistry::list_tools();
     for tool in &tools {
         let first_char = tool.description.chars().next().unwrap();
-        assert!(first_char.is_uppercase(), "Tool '{}' description should start with uppercase verb, got '{}'", tool.name, tool.description);
+        assert!(
+            first_char.is_uppercase(),
+            "Tool '{}' description should start with uppercase verb, got '{}'",
+            tool.name,
+            tool.description
+        );
     }
 }
 
@@ -46,7 +61,11 @@ fn test_tool_descriptions_verb_first() {
 fn test_tool_descriptions_no_trailing_period() {
     let tools = ToolRegistry::list_tools();
     for tool in &tools {
-        assert!(!tool.description.ends_with('.'), "Tool '{}' description should not end with period", tool.name);
+        assert!(
+            !tool.description.ends_with('.'),
+            "Tool '{}' description should not end with period",
+            tool.name
+        );
     }
 }
 
@@ -54,7 +73,11 @@ fn test_tool_descriptions_no_trailing_period() {
 fn test_all_tool_names_prefixed_reality() {
     let tools = ToolRegistry::list_tools();
     for tool in &tools {
-        assert!(tool.name.starts_with("reality_"), "Tool '{}' should be prefixed with 'reality_'", tool.name);
+        assert!(
+            tool.name.starts_with("reality_"),
+            "Tool '{}' should be prefixed with 'reality_'",
+            tool.name
+        );
     }
 }
 
@@ -88,7 +111,11 @@ fn test_required_tools_present() {
 fn test_all_tools_have_input_schema() {
     let tools = ToolRegistry::list_tools();
     for tool in &tools {
-        assert!(tool.input_schema.is_object(), "Tool '{}' should have object input schema", tool.name);
+        assert!(
+            tool.input_schema.is_object(),
+            "Tool '{}' should have object input schema",
+            tool.name
+        );
     }
 }
 
@@ -97,8 +124,20 @@ fn test_all_tools_require_operation() {
     let tools = ToolRegistry::list_tools();
     for tool in &tools {
         let required = tool.input_schema.get("required").and_then(|r| r.as_array());
-        assert!(required.is_some(), "Tool '{}' should have required fields", tool.name);
-        let required_names: Vec<_> = required.unwrap().iter().filter_map(|v| v.as_str()).collect();
-        assert!(required_names.contains(&"operation"), "Tool '{}' should require 'operation' field", tool.name);
+        assert!(
+            required.is_some(),
+            "Tool '{}' should have required fields",
+            tool.name
+        );
+        let required_names: Vec<_> = required
+            .unwrap()
+            .iter()
+            .filter_map(|v| v.as_str())
+            .collect();
+        assert!(
+            required_names.contains(&"operation"),
+            "Tool '{}' should require 'operation' field",
+            tool.name
+        );
     }
 }

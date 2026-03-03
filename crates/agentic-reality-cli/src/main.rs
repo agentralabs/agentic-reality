@@ -3,7 +3,11 @@
 use clap::{Parser, Subcommand};
 
 #[derive(Parser)]
-#[command(name = "areal", version, about = "AgenticReality CLI — existential grounding for AI agents")]
+#[command(
+    name = "areal",
+    version,
+    about = "AgenticReality CLI — existential grounding for AI agents"
+)]
 struct Cli {
     /// Output format: text, json, or table
     #[arg(long, default_value = "text")]

@@ -191,7 +191,8 @@ impl ToolRegistry {
         session: &Arc<Mutex<SessionManager>>,
     ) -> McpResult<Value> {
         let args = arguments.unwrap_or(Value::Object(serde_json::Map::new()));
-        let operation = args.get("operation")
+        let operation = args
+            .get("operation")
             .and_then(|v| v.as_str())
             .unwrap_or("get");
 
@@ -213,7 +214,11 @@ impl ToolRegistry {
             "reality_context" => handle_context(operation, &args, &mut session_guard),
             "reality_ground" => handle_ground(operation, &args, &mut session_guard),
             "reality_workspace" => handle_workspace(operation, &args, &mut session_guard),
-            _ => return Err(McpError::ToolNotFound { tool: name.to_string() }),
+            _ => {
+                return Err(McpError::ToolNotFound {
+                    tool: name.to_string(),
+                })
+            }
         };
 
         match result {
@@ -223,13 +228,21 @@ impl ToolRegistry {
     }
 }
 
-fn handle_deployment(operation: &str, _args: &Value, session: &mut SessionManager) -> Result<ToolCallResult, McpError> {
+fn handle_deployment(
+    operation: &str,
+    _args: &Value,
+    session: &mut SessionManager,
+) -> Result<ToolCallResult, McpError> {
     match operation {
         "get" => {
             let reader = session.engine.reader();
             match reader.get_soul() {
                 Ok(soul) => {
-                    let json = serde_json::to_string_pretty(soul).map_err(|e| McpError::InternalError { message: e.to_string() })?;
+                    let json = serde_json::to_string_pretty(soul).map_err(|e| {
+                        McpError::InternalError {
+                            message: e.to_string(),
+                        }
+                    })?;
                     Ok(ToolCallResult::success(json))
                 }
                 Err(e) => Ok(ToolCallResult::error(e.to_string())),
@@ -238,36 +251,59 @@ fn handle_deployment(operation: &str, _args: &Value, session: &mut SessionManage
         "summary" => {
             let reader = session.engine.reader();
             let summary = reader.get_context_summary();
-            let json = serde_json::to_string_pretty(&summary).map_err(|e| McpError::InternalError { message: e.to_string() })?;
+            let json =
+                serde_json::to_string_pretty(&summary).map_err(|e| McpError::InternalError {
+                    message: e.to_string(),
+                })?;
             Ok(ToolCallResult::success(json))
         }
-        _ => Ok(ToolCallResult::error(format!("unknown operation: {}", operation))),
+        _ => Ok(ToolCallResult::error(format!(
+            "unknown operation: {}",
+            operation
+        ))),
     }
 }
 
-fn handle_memory(operation: &str, _args: &Value, session: &mut SessionManager) -> Result<ToolCallResult, McpError> {
+fn handle_memory(
+    operation: &str,
+    _args: &Value,
+    session: &mut SessionManager,
+) -> Result<ToolCallResult, McpError> {
     match operation {
         "get" => {
             let reader = session.engine.reader();
             match reader.get_incarnation_memory() {
                 Ok(mem) => {
-                    let json = serde_json::to_string_pretty(mem).map_err(|e| McpError::InternalError { message: e.to_string() })?;
+                    let json =
+                        serde_json::to_string_pretty(mem).map_err(|e| McpError::InternalError {
+                            message: e.to_string(),
+                        })?;
                     Ok(ToolCallResult::success(json))
                 }
                 Err(e) => Ok(ToolCallResult::error(e.to_string())),
             }
         }
-        _ => Ok(ToolCallResult::error(format!("unknown operation: {}", operation))),
+        _ => Ok(ToolCallResult::error(format!(
+            "unknown operation: {}",
+            operation
+        ))),
     }
 }
 
-fn handle_environment(operation: &str, _args: &Value, session: &mut SessionManager) -> Result<ToolCallResult, McpError> {
+fn handle_environment(
+    operation: &str,
+    _args: &Value,
+    session: &mut SessionManager,
+) -> Result<ToolCallResult, McpError> {
     match operation {
         "get" => {
             let reader = session.engine.reader();
             match reader.get_environment() {
                 Ok(env) => {
-                    let json = serde_json::to_string_pretty(env).map_err(|e| McpError::InternalError { message: e.to_string() })?;
+                    let json =
+                        serde_json::to_string_pretty(env).map_err(|e| McpError::InternalError {
+                            message: e.to_string(),
+                        })?;
                     Ok(ToolCallResult::success(json))
                 }
                 Err(e) => Ok(ToolCallResult::error(e.to_string())),
@@ -280,119 +316,202 @@ fn handle_environment(operation: &str, _args: &Value, session: &mut SessionManag
                 Err(e) => Ok(ToolCallResult::error(e.to_string())),
             }
         }
-        _ => Ok(ToolCallResult::error(format!("unknown operation: {}", operation))),
+        _ => Ok(ToolCallResult::error(format!(
+            "unknown operation: {}",
+            operation
+        ))),
     }
 }
 
-fn handle_resource(operation: &str, _args: &Value, session: &mut SessionManager) -> Result<ToolCallResult, McpError> {
+fn handle_resource(
+    operation: &str,
+    _args: &Value,
+    session: &mut SessionManager,
+) -> Result<ToolCallResult, McpError> {
     match operation {
         "get" => {
             let reader = session.engine.reader();
             match reader.get_body() {
                 Ok(body) => {
-                    let json = serde_json::to_string_pretty(body).map_err(|e| McpError::InternalError { message: e.to_string() })?;
+                    let json = serde_json::to_string_pretty(body).map_err(|e| {
+                        McpError::InternalError {
+                            message: e.to_string(),
+                        }
+                    })?;
                     Ok(ToolCallResult::success(json))
                 }
                 Err(e) => Ok(ToolCallResult::error(e.to_string())),
             }
         }
-        _ => Ok(ToolCallResult::error(format!("unknown operation: {}", operation))),
+        _ => Ok(ToolCallResult::error(format!(
+            "unknown operation: {}",
+            operation
+        ))),
     }
 }
 
-fn handle_capability(operation: &str, _args: &Value, session: &mut SessionManager) -> Result<ToolCallResult, McpError> {
+fn handle_capability(
+    operation: &str,
+    _args: &Value,
+    session: &mut SessionManager,
+) -> Result<ToolCallResult, McpError> {
     match operation {
         "list" => {
             let reader = session.engine.reader();
             match reader.get_capabilities() {
                 Ok(caps) => {
-                    let json = serde_json::to_string_pretty(caps).map_err(|e| McpError::InternalError { message: e.to_string() })?;
+                    let json = serde_json::to_string_pretty(caps).map_err(|e| {
+                        McpError::InternalError {
+                            message: e.to_string(),
+                        }
+                    })?;
                     Ok(ToolCallResult::success(json))
                 }
                 Err(e) => Ok(ToolCallResult::error(e.to_string())),
             }
         }
-        _ => Ok(ToolCallResult::error(format!("unknown operation: {}", operation))),
+        _ => Ok(ToolCallResult::error(format!(
+            "unknown operation: {}",
+            operation
+        ))),
     }
 }
 
-fn handle_layer(operation: &str, _args: &Value, session: &mut SessionManager) -> Result<ToolCallResult, McpError> {
+fn handle_layer(
+    operation: &str,
+    _args: &Value,
+    session: &mut SessionManager,
+) -> Result<ToolCallResult, McpError> {
     match operation {
         "get" => {
             let reader = session.engine.reader();
             match reader.get_reality_layers() {
                 Ok(layers) => {
-                    let json = serde_json::to_string_pretty(layers).map_err(|e| McpError::InternalError { message: e.to_string() })?;
+                    let json = serde_json::to_string_pretty(layers).map_err(|e| {
+                        McpError::InternalError {
+                            message: e.to_string(),
+                        }
+                    })?;
                     Ok(ToolCallResult::success(json))
                 }
                 Err(e) => Ok(ToolCallResult::error(e.to_string())),
             }
         }
-        _ => Ok(ToolCallResult::error(format!("unknown operation: {}", operation))),
+        _ => Ok(ToolCallResult::error(format!(
+            "unknown operation: {}",
+            operation
+        ))),
     }
 }
 
-fn handle_anchor(operation: &str, _args: &Value, session: &mut SessionManager) -> Result<ToolCallResult, McpError> {
+fn handle_anchor(
+    operation: &str,
+    _args: &Value,
+    session: &mut SessionManager,
+) -> Result<ToolCallResult, McpError> {
     match operation {
         "list" => {
             let reader = session.engine.reader();
             let anchors = reader.get_anchors();
-            let json = serde_json::to_string_pretty(anchors).map_err(|e| McpError::InternalError { message: e.to_string() })?;
+            let json =
+                serde_json::to_string_pretty(anchors).map_err(|e| McpError::InternalError {
+                    message: e.to_string(),
+                })?;
             Ok(ToolCallResult::success(json))
         }
-        _ => Ok(ToolCallResult::error(format!("unknown operation: {}", operation))),
+        _ => Ok(ToolCallResult::error(format!(
+            "unknown operation: {}",
+            operation
+        ))),
     }
 }
 
-fn handle_hallucination(operation: &str, _args: &Value, session: &mut SessionManager) -> Result<ToolCallResult, McpError> {
+fn handle_hallucination(
+    operation: &str,
+    _args: &Value,
+    session: &mut SessionManager,
+) -> Result<ToolCallResult, McpError> {
     match operation {
         "get" => {
             let reader = session.engine.reader();
             match reader.get_hallucination_state() {
                 Ok(state) => {
-                    let json = serde_json::to_string_pretty(state).map_err(|e| McpError::InternalError { message: e.to_string() })?;
+                    let json = serde_json::to_string_pretty(state).map_err(|e| {
+                        McpError::InternalError {
+                            message: e.to_string(),
+                        }
+                    })?;
                     Ok(ToolCallResult::success(json))
                 }
                 Err(e) => Ok(ToolCallResult::error(e.to_string())),
             }
         }
-        _ => Ok(ToolCallResult::error(format!("unknown operation: {}", operation))),
+        _ => Ok(ToolCallResult::error(format!(
+            "unknown operation: {}",
+            operation
+        ))),
     }
 }
 
-fn handle_topology(operation: &str, _args: &Value, session: &mut SessionManager) -> Result<ToolCallResult, McpError> {
+fn handle_topology(
+    operation: &str,
+    _args: &Value,
+    session: &mut SessionManager,
+) -> Result<ToolCallResult, McpError> {
     match operation {
         "get" => {
             let reader = session.engine.reader();
             match reader.get_topology_map() {
                 Ok(topo) => {
-                    let json = serde_json::to_string_pretty(topo).map_err(|e| McpError::InternalError { message: e.to_string() })?;
+                    let json = serde_json::to_string_pretty(topo).map_err(|e| {
+                        McpError::InternalError {
+                            message: e.to_string(),
+                        }
+                    })?;
                     Ok(ToolCallResult::success(json))
                 }
                 Err(e) => Ok(ToolCallResult::error(e.to_string())),
             }
         }
-        _ => Ok(ToolCallResult::error(format!("unknown operation: {}", operation))),
+        _ => Ok(ToolCallResult::error(format!(
+            "unknown operation: {}",
+            operation
+        ))),
     }
 }
 
-fn handle_temporal(operation: &str, _args: &Value, session: &mut SessionManager) -> Result<ToolCallResult, McpError> {
+fn handle_temporal(
+    operation: &str,
+    _args: &Value,
+    session: &mut SessionManager,
+) -> Result<ToolCallResult, McpError> {
     match operation {
         "get" => {
             let reader = session.engine.reader();
             match reader.get_grounded_time() {
                 Ok(time) => {
-                    let json = serde_json::to_string_pretty(time).map_err(|e| McpError::InternalError { message: e.to_string() })?;
+                    let json = serde_json::to_string_pretty(time).map_err(|e| {
+                        McpError::InternalError {
+                            message: e.to_string(),
+                        }
+                    })?;
                     Ok(ToolCallResult::success(json))
                 }
                 Err(e) => Ok(ToolCallResult::error(e.to_string())),
             }
         }
-        _ => Ok(ToolCallResult::error(format!("unknown operation: {}", operation))),
+        _ => Ok(ToolCallResult::error(format!(
+            "unknown operation: {}",
+            operation
+        ))),
     }
 }
 
-fn handle_stakes(operation: &str, _args: &Value, session: &mut SessionManager) -> Result<ToolCallResult, McpError> {
+fn handle_stakes(
+    operation: &str,
+    _args: &Value,
+    session: &mut SessionManager,
+) -> Result<ToolCallResult, McpError> {
     match operation {
         "get" => {
             let reader = session.engine.reader();
@@ -401,17 +520,28 @@ fn handle_stakes(operation: &str, _args: &Value, session: &mut SessionManager) -
                 Err(e) => Ok(ToolCallResult::error(e.to_string())),
             }
         }
-        _ => Ok(ToolCallResult::error(format!("unknown operation: {}", operation))),
+        _ => Ok(ToolCallResult::error(format!(
+            "unknown operation: {}",
+            operation
+        ))),
     }
 }
 
-fn handle_coherence(operation: &str, _args: &Value, session: &mut SessionManager) -> Result<ToolCallResult, McpError> {
+fn handle_coherence(
+    operation: &str,
+    _args: &Value,
+    session: &mut SessionManager,
+) -> Result<ToolCallResult, McpError> {
     match operation {
         "get" => {
             let reader = session.engine.reader();
             match reader.get_coherence_state() {
                 Ok(state) => {
-                    let json = serde_json::to_string_pretty(state).map_err(|e| McpError::InternalError { message: e.to_string() })?;
+                    let json = serde_json::to_string_pretty(state).map_err(|e| {
+                        McpError::InternalError {
+                            message: e.to_string(),
+                        }
+                    })?;
                     Ok(ToolCallResult::success(json))
                 }
                 Err(e) => Ok(ToolCallResult::error(e.to_string())),
@@ -422,39 +552,67 @@ fn handle_coherence(operation: &str, _args: &Value, session: &mut SessionManager
             let coherent = reader.is_coherent();
             Ok(ToolCallResult::success(format!("coherent: {}", coherent)))
         }
-        _ => Ok(ToolCallResult::error(format!("unknown operation: {}", operation))),
+        _ => Ok(ToolCallResult::error(format!(
+            "unknown operation: {}",
+            operation
+        ))),
     }
 }
 
-fn handle_context(operation: &str, _args: &Value, session: &mut SessionManager) -> Result<ToolCallResult, McpError> {
+fn handle_context(
+    operation: &str,
+    _args: &Value,
+    session: &mut SessionManager,
+) -> Result<ToolCallResult, McpError> {
     match operation {
         "summary" | "get" => {
             let reader = session.engine.reader();
             let summary = reader.get_context_summary();
-            let json = serde_json::to_string_pretty(&summary).map_err(|e| McpError::InternalError { message: e.to_string() })?;
+            let json =
+                serde_json::to_string_pretty(&summary).map_err(|e| McpError::InternalError {
+                    message: e.to_string(),
+                })?;
             Ok(ToolCallResult::success(json))
         }
-        _ => Ok(ToolCallResult::error(format!("unknown operation: {}", operation))),
+        _ => Ok(ToolCallResult::error(format!(
+            "unknown operation: {}",
+            operation
+        ))),
     }
 }
 
-fn handle_ground(operation: &str, _args: &Value, session: &mut SessionManager) -> Result<ToolCallResult, McpError> {
+fn handle_ground(
+    operation: &str,
+    _args: &Value,
+    session: &mut SessionManager,
+) -> Result<ToolCallResult, McpError> {
     match operation {
         "status" | "get" => {
             let reader = session.engine.reader();
             match reader.get_grounding_status() {
                 Some(status) => {
-                    let json = serde_json::to_string_pretty(status).map_err(|e| McpError::InternalError { message: e.to_string() })?;
+                    let json = serde_json::to_string_pretty(status).map_err(|e| {
+                        McpError::InternalError {
+                            message: e.to_string(),
+                        }
+                    })?;
                     Ok(ToolCallResult::success(json))
                 }
                 None => Ok(ToolCallResult::error("grounding not initialized".into())),
             }
         }
-        _ => Ok(ToolCallResult::error(format!("unknown operation: {}", operation))),
+        _ => Ok(ToolCallResult::error(format!(
+            "unknown operation: {}",
+            operation
+        ))),
     }
 }
 
-fn handle_workspace(operation: &str, _args: &Value, session: &mut SessionManager) -> Result<ToolCallResult, McpError> {
+fn handle_workspace(
+    operation: &str,
+    _args: &Value,
+    session: &mut SessionManager,
+) -> Result<ToolCallResult, McpError> {
     match operation {
         "info" | "get" => {
             let info = serde_json::json!({
@@ -462,8 +620,15 @@ fn handle_workspace(operation: &str, _args: &Value, session: &mut SessionManager
                 "dirty": session.engine.is_dirty(),
                 "data_path": session.data_path,
             });
-            Ok(ToolCallResult::success(serde_json::to_string_pretty(&info).map_err(|e| McpError::InternalError { message: e.to_string() })?))
+            Ok(ToolCallResult::success(
+                serde_json::to_string_pretty(&info).map_err(|e| McpError::InternalError {
+                    message: e.to_string(),
+                })?,
+            ))
         }
-        _ => Ok(ToolCallResult::error(format!("unknown operation: {}", operation))),
+        _ => Ok(ToolCallResult::error(format!(
+            "unknown operation: {}",
+            operation
+        ))),
     }
 }

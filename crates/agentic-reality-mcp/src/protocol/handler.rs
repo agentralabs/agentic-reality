@@ -21,7 +21,10 @@ impl ProtocolHandler {
     pub async fn handle_request(&self, request: Value) -> Value {
         let method = request.get("method").and_then(|m| m.as_str()).unwrap_or("");
         let id = request.get("id").cloned().unwrap_or(Value::Null);
-        let params = request.get("params").cloned().unwrap_or(Value::Object(Default::default()));
+        let params = request
+            .get("params")
+            .cloned()
+            .unwrap_or(Value::Object(Default::default()));
 
         let result = match method {
             "initialize" => self.handle_initialize(&params).await,
@@ -29,7 +32,9 @@ impl ProtocolHandler {
             "tools/call" => self.handle_tool_call(&params).await,
             "resources/list" => self.handle_list_resources().await,
             "prompts/list" => self.handle_list_prompts().await,
-            _ => Err(McpError::MethodNotFound { method: method.to_string() }),
+            _ => Err(McpError::MethodNotFound {
+                method: method.to_string(),
+            }),
         };
 
         match result {
@@ -70,9 +75,13 @@ impl ProtocolHandler {
     }
 
     async fn handle_tool_call(&self, params: &Value) -> Result<Value, McpError> {
-        let name = params.get("name")
-            .and_then(|n| n.as_str())
-            .ok_or_else(|| McpError::InvalidParams { message: "missing tool name".into() })?;
+        let name =
+            params
+                .get("name")
+                .and_then(|n| n.as_str())
+                .ok_or_else(|| McpError::InvalidParams {
+                    message: "missing tool name".into(),
+                })?;
         let arguments = params.get("arguments").cloned();
         ToolRegistry::call(name, arguments, &self.session).await
     }

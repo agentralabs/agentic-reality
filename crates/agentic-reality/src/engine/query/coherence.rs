@@ -7,7 +7,10 @@ use crate::types::ids::TransitionId;
 
 impl<'a> QueryEngine<'a> {
     pub fn get_coherence_state(&self) -> RealityResult<&CoherenceState> {
-        self.engine.coherence_store.state.as_ref()
+        self.engine
+            .coherence_store
+            .state
+            .as_ref()
             .ok_or_else(|| RealityError::NotInitialized("coherence state".into()))
     }
 
@@ -20,26 +23,44 @@ impl<'a> QueryEngine<'a> {
     }
 
     pub fn get_pending_transitions(&self) -> RealityResult<&[PendingTransition]> {
-        let trans = self.engine.coherence_store.transitions.as_ref()
+        let trans = self
+            .engine
+            .coherence_store
+            .transitions
+            .as_ref()
             .ok_or_else(|| RealityError::NotInitialized("transition state".into()))?;
         Ok(&trans.pending)
     }
 
     pub fn get_transition(&self, id: &TransitionId) -> RealityResult<&PendingTransition> {
-        let trans = self.engine.coherence_store.transitions.as_ref()
+        let trans = self
+            .engine
+            .coherence_store
+            .transitions
+            .as_ref()
             .ok_or_else(|| RealityError::NotInitialized("transition state".into()))?;
-        trans.pending.iter().find(|t| t.id == *id)
+        trans
+            .pending
+            .iter()
+            .find(|t| t.id == *id)
             .ok_or_else(|| RealityError::NotFound(format!("transition {}", id)))
     }
 
     pub fn get_transition_history(&self) -> RealityResult<&[CompletedTransition]> {
-        let trans = self.engine.coherence_store.transitions.as_ref()
+        let trans = self
+            .engine
+            .coherence_store
+            .transitions
+            .as_ref()
             .ok_or_else(|| RealityError::NotInitialized("transition state".into()))?;
         Ok(&trans.history)
     }
 
     pub fn is_coherent(&self) -> bool {
-        self.engine.coherence_store.state.as_ref()
+        self.engine
+            .coherence_store
+            .state
+            .as_ref()
             .map(|s| matches!(s.level, CoherenceLevel::Full { .. }))
             .unwrap_or(true)
     }

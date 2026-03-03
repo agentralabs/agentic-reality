@@ -15,7 +15,10 @@ impl ProtocolNegotiator {
     /// Create a negotiator with the standard supported versions.
     pub fn new() -> Self {
         Self {
-            supported: SUPPORTED_VERSIONS.iter().map(|s| (*s).to_string()).collect(),
+            supported: SUPPORTED_VERSIONS
+                .iter()
+                .map(|s| (*s).to_string())
+                .collect(),
         }
     }
 

@@ -6,7 +6,10 @@ use crate::types::deployment::*;
 use crate::types::error::{RealityError, RealityResult};
 impl<'a> QueryEngine<'a> {
     pub fn get_soul(&self) -> RealityResult<&DeploymentSoul> {
-        self.engine.deployment_store.soul.as_ref()
+        self.engine
+            .deployment_store
+            .soul
+            .as_ref()
             .ok_or_else(|| RealityError::NotInitialized("deployment soul".into()))
     }
 
@@ -27,7 +30,10 @@ impl<'a> QueryEngine<'a> {
     }
 
     pub fn get_incarnation_memory(&self) -> RealityResult<&IncarnationMemory> {
-        self.engine.deployment_store.incarnation_memory.as_ref()
+        self.engine
+            .deployment_store
+            .incarnation_memory
+            .as_ref()
             .ok_or_else(|| RealityError::NotInitialized("incarnation memory".into()))
     }
 

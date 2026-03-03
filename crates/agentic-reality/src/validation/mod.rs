@@ -9,7 +9,8 @@ pub struct McpValidator;
 impl McpValidator {
     /// Require a string field from JSON params.
     pub fn require_string(params: &Value, field: &str) -> RealityResult<String> {
-        params.get(field)
+        params
+            .get(field)
             .and_then(|v| v.as_str())
             .map(|s| s.to_string())
             .ok_or_else(|| RealityError::MissingField(field.to_string()))
@@ -17,19 +18,24 @@ impl McpValidator {
 
     /// Require an optional string field.
     pub fn optional_string(params: &Value, field: &str) -> Option<String> {
-        params.get(field).and_then(|v| v.as_str()).map(|s| s.to_string())
+        params
+            .get(field)
+            .and_then(|v| v.as_str())
+            .map(|s| s.to_string())
     }
 
     /// Require a u64 field.
     pub fn require_u64(params: &Value, field: &str) -> RealityResult<u64> {
-        params.get(field)
+        params
+            .get(field)
             .and_then(|v| v.as_u64())
             .ok_or_else(|| RealityError::MissingField(field.to_string()))
     }
 
     /// Require a f64 field.
     pub fn require_f64(params: &Value, field: &str) -> RealityResult<f64> {
-        params.get(field)
+        params
+            .get(field)
             .and_then(|v| v.as_f64())
             .ok_or_else(|| RealityError::MissingField(field.to_string()))
     }
@@ -41,7 +47,8 @@ impl McpValidator {
 
     /// Require a boolean field.
     pub fn require_bool(params: &Value, field: &str) -> RealityResult<bool> {
-        params.get(field)
+        params
+            .get(field)
             .and_then(|v| v.as_bool())
             .ok_or_else(|| RealityError::MissingField(field.to_string()))
     }

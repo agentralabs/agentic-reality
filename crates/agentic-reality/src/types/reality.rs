@@ -18,15 +18,42 @@ pub struct RealityLayers {
 /// A layer of reality.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum RealityLayer {
-    Physical { substrate: String, certainty: f64 },
-    Virtual { virtualization: String, host: Option<String> },
-    Container { runtime: String, orchestrator: Option<String> },
-    Sandbox { isolation_type: String, restrictions: Vec<String> },
-    TestEnvironment { test_type: String, mocked_components: Vec<String> },
-    Simulation { fidelity: SimulationFidelity, purpose: String, simulated_time: Option<i64> },
-    Replay { source: String, timestamp: i64 },
-    Preview { what_would_happen: String, commit_possible: bool },
-    Unknown { clues: Vec<String> },
+    Physical {
+        substrate: String,
+        certainty: f64,
+    },
+    Virtual {
+        virtualization: String,
+        host: Option<String>,
+    },
+    Container {
+        runtime: String,
+        orchestrator: Option<String>,
+    },
+    Sandbox {
+        isolation_type: String,
+        restrictions: Vec<String>,
+    },
+    TestEnvironment {
+        test_type: String,
+        mocked_components: Vec<String>,
+    },
+    Simulation {
+        fidelity: SimulationFidelity,
+        purpose: String,
+        simulated_time: Option<i64>,
+    },
+    Replay {
+        source: String,
+        timestamp: i64,
+    },
+    Preview {
+        what_would_happen: String,
+        commit_possible: bool,
+    },
+    Unknown {
+        clues: Vec<String>,
+    },
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]

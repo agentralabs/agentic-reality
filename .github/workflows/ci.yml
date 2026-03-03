@@ -330,7 +330,7 @@ jobs:
       # S39: Doc page count (12 required)
       - name: "S39: Doc page count"
         run: |
-          count=$(find docs/ -name "*.md" -type f | wc -l)
+          count=$(find docs/public/ -name "*.md" -type f | wc -l)
           echo "Doc pages: $count (target: 12)"
           if [ "$count" -lt 12 ]; then
             echo "::error::Missing documentation pages ($count < 12)"
@@ -341,7 +341,7 @@ jobs:
       - name: "S40: Doc page lengths"
         run: |
           stubs=0
-          for doc in docs/*.md; do
+          for doc in docs/public/*.md; do
             if [ -f "$doc" ]; then
               lines=$(wc -l < "$doc")
               name=$(basename "$doc")
@@ -360,7 +360,7 @@ jobs:
       # S41: SVG diagram count (4 required)
       - name: "S41: SVG diagram count"
         run: |
-          count=$(find docs/assets/ -name "*.svg" -type f | wc -l)
+          count=$(find assets/ -name "*.svg" -type f | wc -l)
           echo "SVG diagrams: $count (target: 4)"
           if [ "$count" -lt 4 ]; then
             echo "::error::Missing SVG diagrams ($count < 4)"
@@ -450,11 +450,9 @@ jobs:
       - name: "S49: FFI crate build"
         run: cargo build -p agentic-reality-ffi
 
-      # S50: CLAUDE.md present
-      - name: "S50: CLAUDE.md present"
+      # S50: Canonical docs structure
+      - name: "S50: Canonical docs structure"
         run: |
-          if [ ! -f CLAUDE.md ]; then
-            echo "::error::CLAUDE.md not found"
-            exit 1
-          fi
-          echo "CLAUDE.md present"
+          test -d docs/public && echo "docs/public/ OK"
+          test -d docs/ecosystem && echo "docs/ecosystem/ OK"
+          test -f docs/public/sister.manifest.json && echo "sister.manifest.json OK"
