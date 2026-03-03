@@ -1,0 +1,53 @@
+[package]
+name = "agentic-reality"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "Existential grounding system for AI agents — deployment awareness, resource proprioception, reality physics"
+homepage = "https://agentralabs.tech"
+keywords = ["ai", "agent", "reality", "grounding", "deployment"]
+categories = ["data-structures", "command-line-utilities"]
+
+[lib]
+name = "agentic_reality"
+path = "src/lib.rs"
+crate-type = ["lib", "cdylib", "staticlib"]
+
+[features]
+default = ["cli", "format", "ffi"]
+cli = ["dep:clap", "dep:clap_complete", "format"]
+format = ["dep:lz4_flex"]
+ffi = ["format"]
+encryption = ["dep:aes-gcm"]
+
+[dependencies]
+agentic-sdk = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+chrono = { workspace = true }
+uuid = { workspace = true }
+blake3 = { workspace = true }
+thiserror = { workspace = true }
+bincode = { workspace = true }
+bitflags = "2.4"
+lz4_flex = { version = "0.11", optional = true }
+clap = { version = "4", features = ["derive"], optional = true }
+clap_complete = { version = "4", optional = true }
+aes-gcm = { version = "0.10", optional = true }
+sysinfo = "0.31"
+hex = "0.4"
+log = "0.4"
+constant_time_eq = "0.3"
+getrandom = "0.2"
+
+[dev-dependencies]
+criterion = { version = "0.5", features = ["html_reports"] }
+tempfile = { workspace = true }
+rand = "0.8"
+tokio = { workspace = true }
+
+[[bench]]
+name = "benchmarks"
+harness = false

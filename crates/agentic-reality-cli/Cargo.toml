@@ -1,0 +1,24 @@
+[package]
+name = "agentic-reality-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "CLI tool for AgenticReality"
+homepage = "https://agentralabs.tech"
+keywords = ["ai", "agent", "reality", "cli", "grounding"]
+categories = ["command-line-utilities"]
+
+[[bin]]
+name = "areal"
+path = "src/main.rs"
+
+[dependencies]
+agentic-reality = { workspace = true, features = ["cli", "format"] }
+agentic-reality-mcp = { workspace = true }
+clap = { version = "4", features = ["derive"] }
+clap_complete = "4"
+serde_json = { workspace = true }
+serde = { workspace = true }
+anyhow = "1"

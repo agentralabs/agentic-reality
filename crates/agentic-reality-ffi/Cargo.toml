@@ -1,0 +1,21 @@
+[package]
+name = "agentic-reality-ffi"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "FFI bindings for AgenticReality"
+homepage = "https://agentralabs.tech"
+keywords = ["ffi", "reality", "ai", "agent", "bindings"]
+categories = ["api-bindings"]
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+agentic-reality = { path = "../agentic-reality", version = "0.1.0", default-features = false, features = ["format"] }
+pyo3 = { version = "0.20", features = ["extension-module"], optional = true }
+
+[features]
+python = ["pyo3"]
