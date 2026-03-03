@@ -59,3 +59,5 @@ These primary problems were chosen because they are high-cost failure multiplier
 - Risk flattening causes irreversible damage from routine operations.
 
 AgenticReality reduces these multipliers by making each one explicit, testable, and stateful across restarts.
+
+This coverage is intended to be continuously re-validated as new runtime features are added.
