@@ -19,12 +19,18 @@ impl ProtocolHandler {
 
     /// Handle an incoming JSON-RPC request.
     pub async fn handle_request(&self, request: Value) -> Value {
-        let method = request.get("method").and_then(|m| m.as_str()).unwrap_or("");
-        let id = request.get("id").cloned().unwrap_or(Value::Null);
+        let method = request
+            .get("method")
+            .and_then(|m| m.as_str())
+            .map_or("", |value| value);
+        let id = request
+            .get("id")
+            .cloned()
+            .map_or(Value::Null, |value| value);
         let params = request
             .get("params")
             .cloned()
-            .unwrap_or(Value::Object(Default::default()));
+            .map_or(Value::Object(serde_json::Map::new()), |value| value);
 
         let result = match method {
             "initialize" => self.handle_initialize(&params).await,

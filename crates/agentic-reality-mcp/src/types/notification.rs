@@ -116,9 +116,16 @@ mod tests {
         let level = LogLevel::Warning;
         let s = serde_json::to_string(&level);
         assert!(s.is_ok());
-        let parsed: Result<LogLevel, _> =
-            serde_json::from_str(s.as_ref().map(|v| v.as_str()).unwrap_or(""));
+        let serialized = match s {
+            Ok(value) => value,
+            Err(err) => panic!("failed to serialize log level: {err}"),
+        };
+        let parsed: Result<LogLevel, _> = serde_json::from_str(&serialized);
         assert!(parsed.is_ok());
-        assert_eq!(parsed.unwrap_or(LogLevel::Debug), LogLevel::Warning);
+        let parsed_level = match parsed {
+            Ok(value) => value,
+            Err(err) => panic!("failed to parse serialized log level: {err}"),
+        };
+        assert_eq!(parsed_level, LogLevel::Warning);
     }
 }

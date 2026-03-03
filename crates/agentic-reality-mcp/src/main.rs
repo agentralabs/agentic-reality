@@ -173,8 +173,7 @@ fn run_stdio(config: &ServerConfig) -> Result<(), Box<dyn std::error::Error>> {
             let method = value
                 .get("method")
                 .and_then(|m| m.as_str())
-                .unwrap_or("")
-                .to_string();
+                .map_or(String::new(), |m| m.to_string());
 
             // Handle notifications/initialized silently
             if is_notification && method == "notifications/initialized" {

@@ -190,11 +190,14 @@ impl ToolRegistry {
         arguments: Option<Value>,
         session: &Arc<Mutex<SessionManager>>,
     ) -> McpResult<Value> {
-        let args = arguments.unwrap_or(Value::Object(serde_json::Map::new()));
+        let args = match arguments {
+            Some(value) => value,
+            None => Value::Object(serde_json::Map::new()),
+        };
         let operation = args
             .get("operation")
             .and_then(|v| v.as_str())
-            .unwrap_or("get");
+            .map_or("get", |value| value);
 
         let mut session_guard = session.lock().await;
 
