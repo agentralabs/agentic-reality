@@ -1,0 +1,161 @@
+\begin{thebibliography}{10}
+
+\bibitem{amodei2016concrete}
+Dario Amodei, Chris Olah, Jacob Steinhardt, Paul Christiano, John Schulman, and
+  Dan Man{\'e}.
+\newblock Concrete problems in {AI} safety.
+\newblock {\em arXiv preprint arXiv:1606.06565}, 2016.
+
+\bibitem{mcp_spec_2024}
+{Anthropic}.
+\newblock Model context protocol specification.
+\newblock \url{https://modelcontextprotocol.io/}, 2024.
+\newblock Accessed 2025.
+
+\bibitem{brooks1991intelligence}
+Rodney~A Brooks.
+\newblock Intelligence without representation.
+\newblock {\em Artificial Intelligence}, 47(1--3):139--159, 1991.
+
+\bibitem{clancey1997situated}
+William~J Clancey.
+\newblock {\em Situated Cognition: On Human Knowledge and Computer
+  Representations}.
+\newblock Cambridge University Press, 1997.
+
+\bibitem{kubernetes2024}
+{Cloud Native Computing Foundation}.
+\newblock Kubernetes: Production-grade container orchestration.
+\newblock \url{https://kubernetes.io/}, 2024.
+\newblock Accessed 2025.
+
+\bibitem{lz4_2024}
+Yann Collet.
+\newblock {LZ4}: Extremely fast compression algorithm.
+\newblock \url{https://github.com/lz4/lz4}, 2024.
+\newblock Accessed 2025.
+
+\bibitem{craig2002interoception}
+A~D Craig.
+\newblock How do you feel? interoception: The sense of the physiological
+  condition of the body.
+\newblock {\em Nature Reviews Neuroscience}, 3(8):655--666, 2002.
+
+\bibitem{criterion}
+Brook Heisler and Jorge Aparicio.
+\newblock Criterion.rs: Statistics-driven micro-benchmarking in {Rust}.
+\newblock \url{https://github.com/bheisler/criterion.rs}, 2023.
+\newblock Accessed 2025.
+
+\bibitem{ji2023survey}
+Ziwei Ji, Nayeon Lee, Rita Frieske, Tiezheng Yu, Dan Su, Yan Xu, Etsuko Ishii,
+  Ye~Jin Bang, Andrea Madotto, and Pascale Fung.
+\newblock Survey of hallucination in natural language generation.
+\newblock {\em ACM Computing Surveys}, 55(12):1--38, 2023.
+
+\bibitem{kephart2003vision}
+Jeffrey~O Kephart and David~M Chess.
+\newblock The vision of autonomic computing.
+\newblock {\em Computer}, 36(1):41--50, 2003.
+
+\bibitem{kounev2017selfaware}
+Samuel Kounev, Peter Lewis, Kirstie~L Bellman, Nelly Bencomo, Javier Camara,
+  Ada Diaconescu, Lukas Esterle, Kurt Geihs, Holger Giese, Sebastian G{\"o}tz,
+  et~al.
+\newblock {\em Self-Aware Computing Systems}.
+\newblock Springer, 2017.
+
+\bibitem{matsakis2014rust}
+Nicholas~D Matsakis and Felix~S Klock.
+\newblock The {Rust} language.
+\newblock In {\em ACM SIGAda Ada Letters}, volume~34, pages 103--104. ACM,
+  2014.
+
+\bibitem{blake3_2020}
+Jack O'Connor, Jean-Philippe Aumasson, Samuel Neves, and Zooko Wilcox-O'Hearn.
+\newblock {BLAKE3}: One function, fast everywhere.
+\newblock \url{https://github.com/BLAKE3-team/BLAKE3}, 2020.
+\newblock Accessed 2025.
+
+\bibitem{owolabi2026agenticcognition}
+Omoshola Owolabi.
+\newblock {AgenticCognition}: A user modeling architecture for preference-aware
+  {AI} agent systems.
+\newblock 2026.
+\newblock Available at
+  \url{https://github.com/agentralabs/agentic-cognition/tree/main/paper}.
+
+\bibitem{owolabi2026agenticidentity}
+Omoshola Owolabi.
+\newblock {AgenticIdentity}: A cryptographic trust anchor for {AI} agent
+  systems.
+\newblock 2026.
+\newblock Available at
+  \url{https://github.com/agentralabs/agentic-identity/tree/main/paper}.
+
+\bibitem{owolabi2026agenticmemory}
+Omoshola Owolabi.
+\newblock {AgenticMemory}: A binary graph format for persistent, portable, and
+  navigable {AI} agent memory.
+\newblock 2026.
+\newblock Available at
+  \url{https://github.com/agentralabs/agentic-memory/tree/main/paper}.
+
+\bibitem{owolabi2026agentictime}
+Omoshola Owolabi.
+\newblock {AgenticTime}: A binary temporal format for persistent, portable, and
+  navigable {AI} agent scheduling.
+\newblock 2026.
+\newblock Available at
+  \url{https://github.com/agentralabs/agentic-time/tree/main/paper}.
+
+\bibitem{packer2023memgpt}
+Charles Packer, Joseph~E Gonzalez, Dawn Song, Raymond~J Mooney, et~al.
+\newblock {MemGPT}: Towards {LLMs} as operating systems.
+\newblock {\em arXiv preprint arXiv:2310.08560}, 2023.
+
+\bibitem{park2023generative}
+Joon~Sung Park, Joseph~C O'Brien, Carrie~J Cai, Meredith~Ringel Morris, Percy
+  Liang, and Michael~S Bernstein.
+\newblock Generative agents: Interactive simulacra of human behavior.
+\newblock In {\em Proceedings of the 36th Annual ACM Symposium on User
+  Interface Software and Technology}, pages 1--22, 2023.
+
+\bibitem{pfeifer2007understanding}
+Rolf Pfeifer and Josh Bongard.
+\newblock {\em How the Body Shapes the Way We Think: A New View of
+  Intelligence}.
+\newblock MIT Press, 2007.
+
+\bibitem{prometheus2024}
+{Prometheus Authors}.
+\newblock Prometheus: Monitoring system and time series database.
+\newblock \url{https://prometheus.io/}, 2024.
+\newblock CNCF Graduated Project. Accessed 2025.
+
+\bibitem{proske2012proprioceptive}
+Uwe Proske and Simon~C Gandevia.
+\newblock The proprioceptive senses: Their roles in signaling body shape, body
+  position and movement, and muscle force.
+\newblock {\em Physiological Reviews}, 92(4):1651--1697, 2012.
+
+\bibitem{sigelman2010dapper}
+Benjamin~H Sigelman, Luiz~Andr{\'e} Barroso, Mike Burrows, Pat Stephenson,
+  Manoj Plakal, Donald Beaver, Saul Jaspan, and Chandan Shanbhag.
+\newblock Dapper, a large-scale distributed systems tracing infrastructure.
+\newblock {\em Google Technical Report}, 2010.
+
+\bibitem{suchman1987plans}
+Lucy~A Suchman.
+\newblock {\em Plans and Situated Actions: The Problem of Human-Machine
+  Communication}.
+\newblock Cambridge University Press, 1987.
+
+\bibitem{vaswani2017attention}
+Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones,
+  Aidan~N Gomez, {\L}ukasz Kaiser, and Illia Polosukhin.
+\newblock Attention is all you need.
+\newblock In {\em Advances in Neural Information Processing Systems},
+  volume~30, 2017.
+
+\end{thebibliography}

@@ -1,0 +1,52 @@
+This is BibTeX, Version 0.99d (TeX Live 2025/Homebrew)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: agenticreality-paper.aux
+The style file: plain.bst
+Database file #1: references.bib
+Warning--can't use both volume and number fields in matsakis2014rust
+Warning--empty journal in owolabi2026agenticcognition
+Warning--empty journal in owolabi2026agenticidentity
+Warning--empty journal in owolabi2026agenticmemory
+Warning--empty journal in owolabi2026agentictime
+You've used 25 entries,
+            2118 wiz_defined-function locations,
+            630 strings with 8448 characters,
+and the built_in function-call counts, 7912 in all, are:
+= -- 738
+> -- 463
+< -- 4
++ -- 188
+- -- 160
+* -- 515
+:= -- 1383
+add.period$ -- 86
+call.type$ -- 25
+change.case$ -- 149
+chr.to.int$ -- 0
+cite$ -- 30
+duplicate$ -- 271
+empty$ -- 577
+format.name$ -- 160
+if$ -- 1605
+int.to.chr$ -- 0
+int.to.str$ -- 25
+missing$ -- 23
+newline$ -- 138
+num.names$ -- 50
+pop$ -- 193
+preamble$ -- 1
+purify$ -- 128
+quote$ -- 0
+skip$ -- 192
+stack$ -- 0
+substring$ -- 295
+swap$ -- 41
+text.length$ -- 4
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 92
+warning$ -- 5
+while$ -- 66
+width$ -- 27
+write$ -- 278
+(There were 5 warnings)

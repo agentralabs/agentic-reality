@@ -1,0 +1,113 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\citation{matsakis2014rust}
+\citation{vaswani2017attention}
+\citation{park2023generative}
+\citation{packer2023memgpt}
+\citation{mcp_spec_2024}
+\citation{suchman1987plans}
+\citation{clancey1997situated}
+\citation{brooks1991intelligence}
+\citation{pfeifer2007understanding}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\newlabel{sec:intro}{{1}{1}{Introduction}{section.1}{}}
+\citation{kounev2017selfaware}
+\citation{kephart2003vision}
+\citation{suchman1987plans}
+\citation{clancey1997situated}
+\citation{brooks1991intelligence}
+\citation{pfeifer2007understanding}
+\citation{proske2012proprioceptive}
+\citation{craig2002interoception}
+\citation{sigelman2010dapper}
+\citation{prometheus2024}
+\citation{kubernetes2024}
+\citation{amodei2016concrete}
+\citation{ji2023survey}
+\citation{owolabi2026agenticmemory}
+\citation{owolabi2026agenticcognition}
+\citation{owolabi2026agentictime}
+\citation{owolabi2026agenticidentity}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Background and Related Work}{2}{section.2}\protected@file@percent }
+\newlabel{sec:background}{{2}{2}{Background and Related Work}{section.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Architecture}{2}{section.3}\protected@file@percent }
+\newlabel{sec:architecture}{{3}{2}{Architecture}{section.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Seven Reality Domains}{2}{subsection.3.1}\protected@file@percent }
+\newlabel{sec:domains}{{3.1}{2}{Seven Reality Domains}{subsection.3.1}{}}
+\citation{proske2012proprioceptive}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Before and after AgenticReality. (a)~Today, agents operate with no awareness of their deployment context, resources, or the stakes of their actions. (b)~With AgenticReality, agents maintain continuous structured awareness across seven reality domains, enabling deployment-sensitive, resource-adaptive, risk-calibrated behavior.}}{3}{figure.caption.2}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:before_after}{{1}{3}{Before and after AgenticReality. (a)~Today, agents operate with no awareness of their deployment context, resources, or the stakes of their actions. (b)~With AgenticReality, agents maintain continuous structured awareness across seven reality domains, enabling deployment-sensitive, resource-adaptive, risk-calibrated behavior}{figure.caption.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces AgenticReality architecture. Seven reality domains are arranged as layered tiers, managed by the central RealityEngine, persisted in the \texttt  {.areal} binary format, and exposed through 15~MCP tools.}}{3}{figure.caption.3}\protected@file@percent }
+\newlabel{fig:architecture}{{2}{3}{AgenticReality architecture. Seven reality domains are arranged as layered tiers, managed by the central RealityEngine, persisted in the \texttt {.areal} binary format, and exposed through 15~MCP tools}{figure.caption.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces The 26 inventions of AgenticReality, organized by domain tier. Each domain addresses a distinct dimension of existential grounding.}}{3}{table.caption.4}\protected@file@percent }
+\newlabel{tab:inventions}{{1}{3}{The 26 inventions of AgenticReality, organized by domain tier. Each domain addresses a distinct dimension of existential grounding}{table.caption.4}{}}
+\citation{blake3_2020}
+\citation{lz4_2024}
+\citation{criterion}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces The \texttt  {.areal} binary format layout. A 256-byte header contains the ``REAL'' magic, version, flags, and incarnation ID. The section table indexes 9~section types, each with per-section BLAKE3 checksums. A 64-byte footer with ``REALEND\textbackslash 0'' magic provides format validation. LZ4 compression is optionally applied to section payloads.}}{4}{figure.caption.5}\protected@file@percent }
+\newlabel{fig:format}{{3}{4}{The \texttt {.areal} binary format layout. A 256-byte header contains the ``REAL'' magic, version, flags, and incarnation ID. The section table indexes 9~section types, each with per-section BLAKE3 checksums. A 64-byte footer with ``REALEND\textbackslash 0'' magic provides format validation. LZ4 compression is optionally applied to section payloads}{figure.caption.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}The \texttt  {.areal} Binary Format}{4}{subsection.3.2}\protected@file@percent }
+\newlabel{sec:format}{{3.2}{4}{The \texttt {.areal} Binary Format}{subsection.3.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Engine Design}{4}{subsection.3.3}\protected@file@percent }
+\newlabel{sec:engine}{{3.3}{4}{Engine Design}{subsection.3.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}MCP Integration}{4}{subsection.3.4}\protected@file@percent }
+\newlabel{sec:mcp}{{3.4}{4}{MCP Integration}{subsection.3.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Evaluation}{4}{section.4}\protected@file@percent }
+\newlabel{sec:evaluation}{{4}{4}{Evaluation}{section.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Performance Benchmarks}{4}{subsection.4.1}\protected@file@percent }
+\newlabel{sec:benchmarks}{{4.1}{4}{Performance Benchmarks}{subsection.4.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces The 15 MCP tools exposed by AgenticReality. Each tool provides read and/or write access to a specific aspect of grounding state.}}{5}{table.caption.6}\protected@file@percent }
+\newlabel{tab:mcp_tools}{{2}{5}{The 15 MCP tools exposed by AgenticReality. Each tool provides read and/or write access to a specific aspect of grounding state}{table.caption.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Performance benchmarks on Apple~M4~Pro ARM64, 64\,GB RAM, macOS~26.3, Rust~1.90.0, \texttt  {--release} mode.}}{5}{table.caption.7}\protected@file@percent }
+\newlabel{tab:benchmarks}{{3}{5}{Performance benchmarks on Apple~M4~Pro ARM64, 64\,GB RAM, macOS~26.3, Rust~1.90.0, \texttt {--release} mode}{table.caption.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Benchmark results on log scale (Apple~M4~Pro, \texttt  {--release}). In-memory operations complete in under 1\,\textmu {}s. Persistence of 10{,}000 anchors takes 4.51\,ms (save) and 3.35\,ms (load), well within interactive latency budgets.}}{5}{figure.caption.8}\protected@file@percent }
+\newlabel{fig:benchmarks}{{4}{5}{Benchmark results on log scale (Apple~M4~Pro, \texttt {--release}). In-memory operations complete in under 1\,\textmu {}s. Persistence of 10{,}000 anchors takes 4.51\,ms (save) and 3.35\,ms (load), well within interactive latency budgets}{figure.caption.8}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Test suite breakdown by phase. Tests follow an incremental phase pattern, with each phase adding coverage for progressively higher-level functionality.}}{5}{table.caption.9}\protected@file@percent }
+\newlabel{tab:tests}{{4}{5}{Test suite breakdown by phase. Tests follow an incremental phase pattern, with each phase adding coverage for progressively higher-level functionality}{table.caption.9}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Test Coverage}{5}{subsection.4.2}\protected@file@percent }
+\newlabel{sec:tests}{{4.2}{5}{Test Coverage}{subsection.4.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Robustness Hardening}{6}{subsection.4.3}\protected@file@percent }
+\newlabel{sec:robustness}{{4.3}{6}{Robustness Hardening}{subsection.4.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Discussion}{6}{section.5}\protected@file@percent }
+\newlabel{sec:discussion}{{5}{6}{Discussion}{section.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}What Grounding Enables}{6}{subsection.5.1}\protected@file@percent }
+\newlabel{sec:enables}{{5.1}{6}{What Grounding Enables}{subsection.5.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Sister Integration}{6}{subsection.5.2}\protected@file@percent }
+\newlabel{sec:integration}{{5.2}{6}{Sister Integration}{subsection.5.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Limitations}{6}{subsection.5.3}\protected@file@percent }
+\newlabel{sec:limitations}{{5.3}{6}{Limitations}{subsection.5.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Future Work}{6}{subsection.5.4}\protected@file@percent }
+\newlabel{sec:future}{{5.4}{6}{Future Work}{subsection.5.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{6}{section.6}\protected@file@percent }
+\newlabel{sec:conclusion}{{6}{6}{Conclusion}{section.6}{}}
+\bibstyle{plain}
+\bibdata{references}
+\bibcite{amodei2016concrete}{1}
+\bibcite{mcp_spec_2024}{2}
+\bibcite{brooks1991intelligence}{3}
+\bibcite{clancey1997situated}{4}
+\bibcite{kubernetes2024}{5}
+\bibcite{lz4_2024}{6}
+\bibcite{craig2002interoception}{7}
+\bibcite{criterion}{8}
+\bibcite{ji2023survey}{9}
+\bibcite{kephart2003vision}{10}
+\bibcite{kounev2017selfaware}{11}
+\bibcite{matsakis2014rust}{12}
+\bibcite{blake3_2020}{13}
+\bibcite{owolabi2026agenticcognition}{14}
+\bibcite{owolabi2026agenticidentity}{15}
+\bibcite{owolabi2026agenticmemory}{16}
+\bibcite{owolabi2026agentictime}{17}
+\bibcite{packer2023memgpt}{18}
+\bibcite{park2023generative}{19}
+\bibcite{pfeifer2007understanding}{20}
+\bibcite{prometheus2024}{21}
+\bibcite{proske2012proprioceptive}{22}
+\bibcite{sigelman2010dapper}{23}
+\bibcite{suchman1987plans}{24}
+\bibcite{vaswani2017attention}{25}
+\gdef \@abspage@last{8}
