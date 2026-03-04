@@ -70,7 +70,7 @@
 \begin{abstract}
 Large language model agents increasingly operate in production environments---deploying services, managing infrastructure, responding to incidents---yet remain fundamentally ungrounded: they possess no awareness of where they are running, what resources surround them, what the stakes of their actions are, or whether their beliefs about the world remain coherent with reality.
 We present AgenticReality, an existential grounding architecture that gives AI agents continuous, structured awareness of their deployment context across seven reality domains: Deployment Consciousness, Resource Proprioception, Reality Physics, Topology Awareness, Temporal Grounding, Stakes Perception, and Coherence Maintenance.
-The system introduces 26~inventions organized into these seven tiers, persisted in the \texttt{.areal} binary format with per-section BLAKE3 checksums and LZ4 compression support.
+The system introduces 26~capabilities organized into these seven tiers, persisted in the \texttt{.areal} binary format with per-section BLAKE3 checksums and LZ4 compression support.
 We implement AgenticReality in 10{,}634 lines of Rust~\cite{matsakis2014rust} across four crates---core library, CLI, MCP server, and C~FFI---with 314~passing tests, 15~MCP tools, and 9~bridge traits for sister-system integration.
 Benchmarks on Apple~M4~Pro show engine creation in 0.08\,\textmu{}s, soul initialization in 0.03\,\textmu{}s, anchor addition in 0.97\,\textmu{}s, and persistence of 10{,}000 anchors in 4.51\,ms---confirming that existential grounding adds negligible overhead to interactive agent systems.
 AgenticReality is the tenth module in AgenticOS, providing the foundation upon which all other agent capabilities are grounded in deployment reality.
@@ -109,7 +109,7 @@ We present AgenticReality, an architecture that addresses all four problems thro
   \item \textbf{Coherence Maintenance} --- continuous coherence checking and managed transitions between reality states.
 \end{enumerate}
 
-Together, these 7~domains encompass 26~inventions that provide AI agents with existential grounding---a structured, continuous awareness of their relationship to the world they inhabit and affect.
+Together, these 7~domains encompass 26~capabilities that provide AI agents with existential grounding---a structured, continuous awareness of their relationship to the world they inhabit and affect.
 
 % Figure 1: Before/After full-width comparison
 \begin{figure*}[t]
@@ -168,7 +168,7 @@ Together, these 7~domains encompass 26~inventions that provide AI agents with ex
 \label{fig:before_after}
 \end{figure*}
 
-The remainder of this paper is organized as follows. Section~\ref{sec:background} surveys related work in self-aware computing, situated cognition, and agent observability. Section~\ref{sec:architecture} presents the architecture, including the seven reality domains, 26~inventions, \texttt{.areal} binary format, and MCP integration. Section~\ref{sec:evaluation} reports benchmarks, test coverage, and robustness analysis. Section~\ref{sec:discussion} discusses implications, limitations, and future work. Section~\ref{sec:conclusion} concludes.
+The remainder of this paper is organized as follows. Section~\ref{sec:background} surveys related work in self-aware computing, situated cognition, and agent observability. Section~\ref{sec:architecture} presents the architecture, including the seven reality domains, 26~capabilities, \texttt{.areal} binary format, and MCP integration. Section~\ref{sec:evaluation} reports benchmarks, test coverage, and robustness analysis. Section~\ref{sec:discussion} discusses implications, limitations, and future work. Section~\ref{sec:conclusion} concludes.
 
 
 % ============================================================================
@@ -200,7 +200,7 @@ The problem of grounding AI agents in deployment reality sits at the intersectio
 \section{Architecture}
 \label{sec:architecture}
 
-AgenticReality is organized as a layered architecture with seven reality domains containing 26~inventions total. A central \texttt{RealityEngine} manages cross-domain coherence, persistence via the \texttt{.areal} format, and exposure through 15~MCP tools.
+AgenticReality is organized as a layered architecture with seven reality domains containing 26~capabilities total. A central \texttt{RealityEngine} manages cross-domain coherence, persistence via the \texttt{.areal} format, and exposure through 15~MCP tools.
 
 % ----------------------------------------------------------------------------
 \subsection{Seven Reality Domains}
@@ -212,30 +212,30 @@ AgenticReality is organized as a layered architecture with seven reality domains
 \begin{tikzpicture}[
   every node/.style={font=\scriptsize},
   domainbox/.style={rectangle, rounded corners=3pt, draw=#1, fill=#1!12, minimum width=5.2cm, minimum height=0.45cm, font=\tiny\bfseries, align=center, thick},
-  inventionlabel/.style={font=\tiny, text=argray, align=right},
+  capabilitylabel/.style={font=\tiny, text=argray, align=right},
 ]
 
 % Stacked domain layers (bottom to top), compact spacing
 \node[domainbox=ardarkblue] (d7) at (0, 0) {7. Coherence Maintenance};
-\node[inventionlabel] at (3.3, 0) {2 inv.};
+\node[capabilitylabel] at (3.3, 0) {2 inv.};
 
 \node[domainbox=arred] (d6) at (0, 0.7) {6. Stakes Perception};
-\node[inventionlabel] at (3.3, 0.7) {3 inv.};
+\node[capabilitylabel] at (3.3, 0.7) {3 inv.};
 
 \node[domainbox=argreen] (d5) at (0, 1.4) {5. Temporal Grounding};
-\node[inventionlabel] at (3.3, 1.4) {3 inv.};
+\node[capabilitylabel] at (3.3, 1.4) {3 inv.};
 
 \node[domainbox=arpurple] (d4) at (0, 2.1) {4. Topology Awareness};
-\node[inventionlabel] at (3.3, 2.1) {4 inv.};
+\node[capabilitylabel] at (3.3, 2.1) {4 inv.};
 
 \node[domainbox=arblue] (d3) at (0, 2.8) {3. Reality Physics};
-\node[inventionlabel] at (3.3, 2.8) {4 inv.};
+\node[capabilitylabel] at (3.3, 2.8) {4 inv.};
 
 \node[domainbox=arteal] (d2) at (0, 3.5) {2. Resource Proprioception};
-\node[inventionlabel] at (3.3, 3.5) {5 inv.};
+\node[capabilitylabel] at (3.3, 3.5) {5 inv.};
 
 \node[domainbox=arorange] (d1) at (0, 4.2) {1. Deployment Consciousness};
-\node[inventionlabel] at (3.3, 4.2) {5 inv.};
+\node[capabilitylabel] at (3.3, 4.2) {5 inv.};
 
 % Engine box at top
 \node[rectangle, rounded corners=4pt, draw=argray, fill=argray!8, minimum width=5.5cm, minimum height=0.5cm, font=\scriptsize\bfseries, thick] (engine) at (0, 5.1) {RealityEngine};
@@ -256,16 +256,16 @@ AgenticReality is organized as a layered architecture with seven reality domains
 \label{fig:architecture}
 \end{figure}
 
-Table~\ref{tab:inventions} lists all 26~inventions organized by domain tier. Each domain addresses a distinct dimension of existential grounding.
+Table~\ref{tab:capabilities} lists all 26~capabilities organized by domain tier. Each domain addresses a distinct dimension of existential grounding.
 
 \begin{table}[t]
-\caption{The 26 inventions of AgenticReality, organized by domain tier. Each domain addresses a distinct dimension of existential grounding.}
-\label{tab:inventions}
+\caption{The 26 capabilities of AgenticReality, organized by domain tier. Each domain addresses a distinct dimension of existential grounding.}
+\label{tab:capabilities}
 \centering
 \scriptsize
 \begin{tabular}{@{}clp{3.8cm}@{}}
 \toprule
-\textbf{Tier} & \textbf{Domain} & \textbf{Inventions} \\
+\textbf{Tier} & \textbf{Domain} & \textbf{Capabilities} \\
 \midrule
 1 & Deployment & Deployment Soul, Environment \\
   & Consciousness (5) & Sensing, Incarnation Memory, Context Fingerprint, Topology Map \\
@@ -542,7 +542,7 @@ Phase 1 & Type system, serialization & 51 \\
 Phase 2 & Write/query engine, all 7 domains & 33 \\
 Phase 3 & .areal format, header, footer, roundtrip & 10 \\
 Phase 4 & McpValidator, strict input validation & 19 \\
-Phase 5--7 & Inventions, bridges, security & 30 \\
+Phase 5--7 & Capabilities, bridges, security & 30 \\
 Phase 8 & Stress, edge cases, multi-engine & 31 \\
 Phase 9 & FFI, constants, defaults & 8 \\
 MCP unit & Protocol, config, session, types & 61 \\
@@ -620,7 +620,7 @@ Three directions merit investigation. First, \emph{active grounding enforcement}
 \section{Conclusion}
 \label{sec:conclusion}
 
-We have presented AgenticReality, an existential grounding architecture that gives AI agents structured, continuous awareness of their deployment context. Through seven reality domains---Deployment Consciousness, Resource Proprioception, Reality Physics, Topology Awareness, Temporal Grounding, Stakes Perception, and Coherence Maintenance---and 26~inventions distributed across these domains, AgenticReality addresses the fundamental problem of ungrounded agents operating in production environments.
+We have presented AgenticReality, an existential grounding architecture that gives AI agents structured, continuous awareness of their deployment context. Through seven reality domains---Deployment Consciousness, Resource Proprioception, Reality Physics, Topology Awareness, Temporal Grounding, Stakes Perception, and Coherence Maintenance---and 26~capabilities distributed across these domains, AgenticReality addresses the fundamental problem of ungrounded agents operating in production environments.
 
 The implementation delivers this capability in a compact, high-performance package: 10{,}634 lines of Rust across four crates (core library, CLI, MCP server, FFI), 314~passing tests, 15~MCP tools, and 9~bridge traits for sister-system integration. The \texttt{.areal} binary format provides persistent grounding state with per-section BLAKE3 checksums, LZ4 compression support, and a 256-byte header / 64-byte footer structure with 9~section types.
 

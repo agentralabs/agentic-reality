@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Binary .areal file format with per-section LZ4 compression and BLAKE3
   integrity checksums
 - Strict validation module with no silent fallbacks
-- 26 invention modules across 7 tiers
+- 26 capability modules across 7 tiers
 - 9 sister bridge traits (Time, Contract, Identity, Memory, Cognition, Comm,
   Codebase, Vision, Hydra) with NoOp default implementations
 - Security: token-based authentication, operation-level authorization,
@@ -57,7 +57,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Documentation
 
 - 12 documentation pages: QUICKSTART, ARCHITECTURE, API, CLI, MCP-TOOLS,
-  INVENTIONS, SISTER-INTEGRATION, CONCEPTS, EXAMPLES, FAQ, TROUBLESHOOTING,
+  CAPABILITIES, SISTER-INTEGRATION, CONCEPTS, EXAMPLES, FAQ, TROUBLESHOOTING,
   PRIVACY
 - 4 SVG diagrams: architecture, reality-domains, resource-body,
   context-fingerprint

@@ -14,9 +14,9 @@
   <a href="#install"><img src="https://img.shields.io/badge/cargo_install-agentic--reality-F59E0B?style=for-the-badge&logo=rust&logoColor=white" alt="cargo install"></a>
   <a href="#mcp-server"><img src="https://img.shields.io/badge/MCP_Server-agentic--reality--mcp-10B981?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiPjxwYXRoIGQ9Ik0xMiAydjIwTTIgMTJoMjAiLz48L3N2Zz4=&logoColor=white" alt="MCP Server"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-22C55E?style=for-the-badge" alt="MIT License"></a>
-  <a href="docs/INVENTIONS.md"><img src="https://img.shields.io/badge/Inventions-26-8B5CF6?style=for-the-badge" alt="26 Inventions"></a>
+  <a href="docs/public/concepts.md"><img src="https://img.shields.io/badge/Capabilities-26-8B5CF6?style=for-the-badge" alt="26 Capabilities"></a>
   <a href="paper/paper-i-format/agentic-reality-paper.pdf"><img src="https://img.shields.io/badge/Research-Paper_I-8B5CF6?style=for-the-badge" alt="Research Paper I"></a>
-  <a href="docs/API.md"><img src="https://img.shields.io/badge/format-.areal-3B82F6?style=for-the-badge" alt=".areal format"></a>
+  <a href="docs/public/api-reference.md"><img src="https://img.shields.io/badge/format-.areal-3B82F6?style=for-the-badge" alt=".areal format"></a>
 </p>
 
 <p align="center">
@@ -28,12 +28,12 @@
 </p>
 
 <p align="center">
-  <a href="#quickstart">Quickstart</a> · <a href="#problems-solved">Problems Solved</a> · <a href="#how-it-works">How It Works</a> · <a href="#reality-physics">Reality Physics</a> · <a href="#stakes-perception">Stakes Perception</a> · <a href="#benchmarks">Benchmarks</a> · <a href="#install">Install</a> · <a href="docs/API.md">API</a> · <a href="docs/INVENTIONS.md">Inventions</a> · <a href="docs/papers/">Papers</a>
+  <a href="#quickstart">Quickstart</a> · <a href="#problems-solved">Problems Solved</a> · <a href="#how-it-works">How It Works</a> · <a href="#reality-physics">Reality Physics</a> · <a href="#stakes-perception">Stakes Perception</a> · <a href="#benchmarks">Benchmarks</a> · <a href="#install">Install</a> · <a href="docs/public/api-reference.md">API</a> · <a href="docs/public/concepts.md">Capabilities</a> · <a href="docs/papers/">Papers</a>
 </p>
 
 ---
 
-> Sister #10 of 25 in the Agentra ecosystem | `.areal` format | 26 Inventions | 15 MCP Tools | ~40 CLI Commands
+> Sister #10 of 25 in the Agentra ecosystem | `.areal` format | 26 Capabilities | 15 MCP Tools | ~40 CLI Commands
 
 <p align="center">
   <img src="assets/github-terminal-pane.svg" alt="AgenticReality terminal demo" width="980">
@@ -124,7 +124,7 @@ AgenticReality is a Rust-native reality engine that treats operational context a
 |                    REALITY ENGINE                            |
 +-----------+-----------+------------+-----------+------------+
 | Write     | Query     | 26         | Reality   | Coherence  |
-| Engine    | Engine    | Inventions | Physics   | Engine     |
+| Engine    | Engine    | Capabilities | Physics   | Engine     |
 +-----------+-----------+------------+-----------+------------+
                              |
                   +----------v----------+
@@ -145,11 +145,11 @@ The engine begins with **Init**, creating a deployment soul and resource body. *
 
 ---
 
-## 26 Inventions
+## 26 Capabilities
 
-AgenticReality ships 26 inventions organized across seven tiers of increasing awareness:
+AgenticReality ships 26 capabilities organized across seven tiers of increasing awareness:
 
-| Tier | Inventions | Focus |
+| Tier | Capabilities | Focus |
 |:---|:---|:---|
 | **T1: Deployment Consciousness** | Deployment Soul, Environment Sensing, Incarnation Memory, Context Fingerprint, Deployment Topology Map | Where do I exist? |
 | **T2: Resource Proprioception** | Resource Body Schema, Capability Discovery, Resource Pressure Gradient, Cost Consciousness, Capacity Planning Intuition | What do I have? |
@@ -159,7 +159,7 @@ AgenticReality ships 26 inventions organized across seven tiers of increasing aw
 | **T6: Stakes Perception** | Consequence Awareness, Risk Field Perception, Blast Radius Awareness | What are the consequences? |
 | **T7: Coherence Maintenance** | Reality Coherence Engine, Context Transition Manager | How do I stay grounded? |
 
-[Full invention documentation ->](docs/INVENTIONS.md)
+[Full capability documentation ->](docs/public/concepts.md)
 
 ---
 
@@ -807,7 +807,7 @@ This is a Cargo workspace monorepo containing the core library, MCP server, CLI,
 
 | Crate | Description |
 |:---|:---|
-| [`agentic-reality`](crates/agentic-reality/) | Core library -- types, engines, 26 inventions, reality physics, bridges |
+| [`agentic-reality`](crates/agentic-reality/) | Core library -- types, engines, 26 capabilities, reality physics, bridges |
 | [`agentic-reality-mcp`](crates/agentic-reality-mcp/) | MCP server -- 15 tools, JSON-RPC 2.0 over stdio |
 | [`agentic-reality-cli`](crates/agentic-reality-cli/) | CLI binary -- `areal`, ~40 commands |
 | [`agentic-reality-ffi`](crates/agentic-reality-ffi/) | FFI bindings -- C, Python, WASM |
@@ -856,7 +856,7 @@ This is not a prototype. It is tested, benchmarked, and hardened.
 | Phase 2: Engine | 50 | Write/query operations -- CRUD, sensing, grounding |
 | Phase 3: Format | 25 | .areal persistence -- write, read, integrity, corruption recovery |
 | Phase 4: Validation | 20 | Input validation, error handling, edge cases |
-| Phase 5: Inventions | 35 | All 26 invention modules -- reality physics, coherence, topology |
+| Phase 5: Capabilities | 35 | All 26 capability modules -- reality physics, coherence, topology |
 | Phase 6: Bridges | 25 | All 9 bridge traits -- NoOp defaults, typed interfaces |
 | Phase 7: Security | 20 | Encryption, access control, tamper detection |
 | Phase 8: Stress | 20 | Concurrent access, large state, rapid sensing cycles |
@@ -934,10 +934,10 @@ cargo bench -p agentic-reality
 |:---|:---|
 | [Quickstart](docs/QUICKSTART.md) | Get started in 5 minutes |
 | [Architecture](docs/ARCHITECTURE.md) | System design and data flow |
-| [API Reference](docs/API.md) | Rust API docs |
+| [API Reference](docs/public/api-reference.md) | Rust API docs |
 | [CLI Reference](docs/CLI.md) | All ~40 commands with examples |
 | [MCP Tools](docs/MCP-TOOLS.md) | 15 MCP tools with parameters and responses |
-| [26 Inventions](docs/INVENTIONS.md) | All inventions explained with examples |
+| [26 Capabilities](docs/public/concepts.md) | All capabilities explained with examples |
 | [Core Concepts](docs/CONCEPTS.md) | Reality physics, stakes perception, coherence |
 | [Sister Integration](docs/SISTER-INTEGRATION.md) | Bridge documentation and data flow |
 | [Examples](docs/EXAMPLES.md) | Usage examples and patterns |
@@ -955,7 +955,7 @@ cargo bench -p agentic-reality
 | **Test Coverage** | 250+ tests passing |
 | **MCP Tools** | 15 |
 | **CLI Commands** | ~40 |
-| **Inventions** | 26 across 7 tiers |
+| **Capabilities** | 26 across 7 tiers |
 | **Bridge Traits** | 9 |
 | **Reality Domains** | 7 |
 | **Storage Efficiency** | ~12 KB typical state |

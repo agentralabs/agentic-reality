@@ -10,7 +10,7 @@ AgenticReality is a Rust-native operational context engine structured as a Cargo
 
 | Crate | Published As | Role |
 |:---|:---|:---|
-| `agentic-reality` | `agentic-reality` on crates.io | Core library — types, engines, 26 inventions, bridge traits |
+| `agentic-reality` | `agentic-reality` on crates.io | Core library — types, engines, 26 capabilities, bridge traits |
 | `agentic-reality-mcp` | `agentic-reality-mcp` on crates.io | MCP server — 15 tools, JSON-RPC 2.0 over stdio |
 | `agentic-reality-cli` | `agentic-reality-cli` on crates.io | CLI binary — `areal`, ~40 commands |
 | `agentic-reality-ffi` | `agentic-reality-ffi` on crates.io | FFI bindings — C ABI, Python (maturin), WASM |
@@ -23,7 +23,7 @@ agentic-reality/
 │   │   ├── src/
 │   │   │   ├── engine/             # RealityEngine main struct
 │   │   │   ├── domains/            # 7 domain modules
-│   │   │   ├── inventions/         # 26 invention impls
+│   │   │   ├── capabilities/         # 26 capability impls
 │   │   │   ├── physics/            # Reality physics rules
 │   │   │   ├── bridges/            # Sister bridge traits
 │   │   │   └── formats/            # .areal binary format
@@ -75,9 +75,9 @@ The core library separates mutations from reads:
 
 Both engines operate through the `RealityEngine` struct, which serializes and deserializes the `.areal` binary format using atomic writes.
 
-## 26 Inventions
+## 26 Capabilities
 
-Each invention is a self-contained capability layer built on top of the core engines. Inventions span Tier A (core sensing), Tier B (grounding), Tier C (topology), and higher tiers for advanced use cases like temporal archaeology and context drift detection.
+Each capability is a self-contained capability layer built on top of the core engines. Capabilities span Tier A (core sensing), Tier B (grounding), Tier C (topology), and higher tiers for advanced use cases like temporal archaeology and context drift detection.
 
 See [Command Surface](command-surface.md) for the full inventory.
 
