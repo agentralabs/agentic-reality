@@ -14,43 +14,43 @@ echo "=== Canonical Consistency Check ==="
 echo ""
 
 # --- 1. Doc pages (12 required) ---
-echo "--- Documentation pages (docs/*.md) ---"
+echo "--- Documentation pages (docs/public/*.md) ---"
 DOC_PAGES=(
-    QUICKSTART
-    ARCHITECTURE
-    API
-    CLI
-    MCP-TOOLS
-    INVENTIONS
-    SISTER-INTEGRATION
-    CONCEPTS
-    EXAMPLES
-    FAQ
-    TROUBLESHOOTING
-    PRIVACY
+    quickstart
+    architecture
+    api-reference
+    cli-reference
+    mcp-tools
+    integration-guide
+    concepts
+    benchmarks
+    faq
+    troubleshooting
+    installation
+    command-surface
 )
 for page in "${DOC_PAGES[@]}"; do
-    if [[ -f "$REPO_ROOT/docs/${page}.md" ]]; then
-        pass "docs/${page}.md"
+    if [[ -f "$REPO_ROOT/docs/public/${page}.md" ]]; then
+        pass "docs/public/${page}.md"
     else
-        fail "docs/${page}.md missing"
+        fail "docs/public/${page}.md missing"
     fi
 done
 
 # --- 2. SVG diagrams (4 required) ---
 echo ""
-echo "--- SVG diagrams (docs/assets/*.svg) ---"
+echo "--- SVG diagrams (assets/*.svg) ---"
 SVGS=(
-    architecture
-    reality-domains
-    resource-body
-    context-fingerprint
+    architecture-agentra
+    benchmark-chart
+    github-hero-pane
+    github-terminal-pane
 )
 for svg in "${SVGS[@]}"; do
-    if [[ -f "$REPO_ROOT/docs/assets/${svg}.svg" ]]; then
-        pass "docs/assets/${svg}.svg"
+    if [[ -f "$REPO_ROOT/assets/${svg}.svg" ]]; then
+        pass "assets/${svg}.svg"
     else
-        fail "docs/assets/${svg}.svg missing"
+        fail "assets/${svg}.svg missing"
     fi
 done
 
@@ -61,7 +61,6 @@ ROOT_FILES=(
     README.md
     LICENSE
     CHANGELOG.md
-    CLAUDE.md
     SECURITY.md
     CONTRIBUTING.md
     CODE_OF_CONDUCT.md
