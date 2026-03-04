@@ -15,6 +15,8 @@ use agentic_reality_mcp::session::SessionManager;
 
 /// 8 MiB maximum inbound request size for stdio JSON-RPC frames.
 const MAX_CONTENT_LENGTH_BYTES: usize = 8 * 1024 * 1024;
+/// Canonical MCP header prefix for framed transport.
+const CONTENT_LENGTH_HEADER_PREFIX: &str = "content-length:";
 
 /// AgenticReality MCP Server — existential grounding for AI agents.
 #[derive(Parser)]
@@ -151,6 +153,13 @@ fn run_stdio(config: &ServerConfig) -> Result<(), Box<dyn std::error::Error>> {
 
             let trimmed = line.trim();
             if trimmed.is_empty() {
+                continue;
+            }
+            // Accept framed MCP streams by skipping `content-length:` header lines.
+            if trimmed
+                .to_ascii_lowercase()
+                .starts_with(CONTENT_LENGTH_HEADER_PREFIX)
+            {
                 continue;
             }
             if trimmed.len() > MAX_CONTENT_LENGTH_BYTES {
