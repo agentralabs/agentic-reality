@@ -20,166 +20,722 @@ impl ToolRegistry {
                 name: "reality_deployment".into(),
                 description: "Manage agent deployment soul, birth context, substrate, and incarnation identity".into(),
                 input_schema: serde_json::json!({
-                    "type": "object",
-                    "properties": {
-                        "operation": { "type": "string", "description": "Operation to perform" }
-                    },
-                    "required": ["operation"]
-                }),
+                        "type": "object",
+                        "properties": {
+                            "operation": {
+                                "type": "string",
+                                "description": "Operation to perform"
+                            },
+                            "include_content": {
+                                "type": "boolean",
+                                "default": false,
+                                "description": "Return full content (default: IDs only)"
+                            },
+                            "intent": {
+                                "type": "string",
+                                "enum": [
+                                    "exists",
+                                    "ids",
+                                    "summary",
+                                    "fields",
+                                    "full"
+                                ],
+                                "description": "Extraction intent level"
+                            },
+                            "since": {
+                                "type": "integer",
+                                "description": "Only return changes since this Unix timestamp"
+                            },
+                            "token_budget": {
+                                "type": "integer",
+                                "description": "Maximum token budget for response"
+                            },
+                            "max_results": {
+                                "type": "integer",
+                                "default": 10,
+                                "description": "Maximum number of results"
+                            },
+                            "cursor": {
+                                "type": "string",
+                                "description": "Pagination cursor for next page"
+                            }
+                        },
+                        "required": [
+                            "operation"
+                        ]
+                    }),
             },
             ToolDefinition {
                 name: "reality_memory".into(),
                 description: "Access incarnation memory across past lives, wisdom, and karma".into(),
                 input_schema: serde_json::json!({
-                    "type": "object",
-                    "properties": {
-                        "operation": { "type": "string" }
-                    },
-                    "required": ["operation"]
-                }),
+                        "type": "object",
+                        "properties": {
+                            "operation": {
+                                "type": "string"
+                            },
+                            "include_content": {
+                                "type": "boolean",
+                                "default": false,
+                                "description": "Return full content (default: IDs only)"
+                            },
+                            "intent": {
+                                "type": "string",
+                                "enum": [
+                                    "exists",
+                                    "ids",
+                                    "summary",
+                                    "fields",
+                                    "full"
+                                ],
+                                "description": "Extraction intent level"
+                            },
+                            "since": {
+                                "type": "integer",
+                                "description": "Only return changes since this Unix timestamp"
+                            },
+                            "token_budget": {
+                                "type": "integer",
+                                "description": "Maximum token budget for response"
+                            },
+                            "max_results": {
+                                "type": "integer",
+                                "default": 10,
+                                "description": "Maximum number of results"
+                            },
+                            "cursor": {
+                                "type": "string",
+                                "description": "Pagination cursor for next page"
+                            }
+                        },
+                        "required": [
+                            "operation"
+                        ]
+                    }),
             },
             ToolDefinition {
                 name: "reality_environment".into(),
                 description: "Sense and interact with the operational environment medium".into(),
                 input_schema: serde_json::json!({
-                    "type": "object",
-                    "properties": {
-                        "operation": { "type": "string" }
-                    },
-                    "required": ["operation"]
-                }),
+                        "type": "object",
+                        "properties": {
+                            "operation": {
+                                "type": "string"
+                            },
+                            "include_content": {
+                                "type": "boolean",
+                                "default": false,
+                                "description": "Return full content (default: IDs only)"
+                            },
+                            "intent": {
+                                "type": "string",
+                                "enum": [
+                                    "exists",
+                                    "ids",
+                                    "summary",
+                                    "fields",
+                                    "full"
+                                ],
+                                "description": "Extraction intent level"
+                            },
+                            "since": {
+                                "type": "integer",
+                                "description": "Only return changes since this Unix timestamp"
+                            },
+                            "token_budget": {
+                                "type": "integer",
+                                "description": "Maximum token budget for response"
+                            },
+                            "max_results": {
+                                "type": "integer",
+                                "default": 10,
+                                "description": "Maximum number of results"
+                            },
+                            "cursor": {
+                                "type": "string",
+                                "description": "Pagination cursor for next page"
+                            }
+                        },
+                        "required": [
+                            "operation"
+                        ]
+                    }),
             },
             ToolDefinition {
                 name: "reality_resource".into(),
                 description: "Monitor resource body including memory, CPU, network, and storage".into(),
                 input_schema: serde_json::json!({
-                    "type": "object",
-                    "properties": {
-                        "operation": { "type": "string" }
-                    },
-                    "required": ["operation"]
-                }),
+                        "type": "object",
+                        "properties": {
+                            "operation": {
+                                "type": "string"
+                            },
+                            "include_content": {
+                                "type": "boolean",
+                                "default": false,
+                                "description": "Return full content (default: IDs only)"
+                            },
+                            "intent": {
+                                "type": "string",
+                                "enum": [
+                                    "exists",
+                                    "ids",
+                                    "summary",
+                                    "fields",
+                                    "full"
+                                ],
+                                "description": "Extraction intent level"
+                            },
+                            "since": {
+                                "type": "integer",
+                                "description": "Only return changes since this Unix timestamp"
+                            },
+                            "token_budget": {
+                                "type": "integer",
+                                "description": "Maximum token budget for response"
+                            },
+                            "max_results": {
+                                "type": "integer",
+                                "default": 10,
+                                "description": "Maximum number of results"
+                            },
+                            "cursor": {
+                                "type": "string",
+                                "description": "Pagination cursor for next page"
+                            }
+                        },
+                        "required": [
+                            "operation"
+                        ]
+                    }),
             },
             ToolDefinition {
                 name: "reality_capability".into(),
                 description: "Discover and query agent capabilities in the current context".into(),
                 input_schema: serde_json::json!({
-                    "type": "object",
-                    "properties": {
-                        "operation": { "type": "string" }
-                    },
-                    "required": ["operation"]
-                }),
+                        "type": "object",
+                        "properties": {
+                            "operation": {
+                                "type": "string"
+                            },
+                            "include_content": {
+                                "type": "boolean",
+                                "default": false,
+                                "description": "Return full content (default: IDs only)"
+                            },
+                            "intent": {
+                                "type": "string",
+                                "enum": [
+                                    "exists",
+                                    "ids",
+                                    "summary",
+                                    "fields",
+                                    "full"
+                                ],
+                                "description": "Extraction intent level"
+                            },
+                            "since": {
+                                "type": "integer",
+                                "description": "Only return changes since this Unix timestamp"
+                            },
+                            "token_budget": {
+                                "type": "integer",
+                                "description": "Maximum token budget for response"
+                            },
+                            "max_results": {
+                                "type": "integer",
+                                "default": 10,
+                                "description": "Maximum number of results"
+                            },
+                            "cursor": {
+                                "type": "string",
+                                "description": "Pagination cursor for next page"
+                            }
+                        },
+                        "required": [
+                            "operation"
+                        ]
+                    }),
             },
             ToolDefinition {
                 name: "reality_layer".into(),
                 description: "Manage reality layers and detect simulation vs physical contexts".into(),
                 input_schema: serde_json::json!({
-                    "type": "object",
-                    "properties": {
-                        "operation": { "type": "string" }
-                    },
-                    "required": ["operation"]
-                }),
+                        "type": "object",
+                        "properties": {
+                            "operation": {
+                                "type": "string"
+                            },
+                            "include_content": {
+                                "type": "boolean",
+                                "default": false,
+                                "description": "Return full content (default: IDs only)"
+                            },
+                            "intent": {
+                                "type": "string",
+                                "enum": [
+                                    "exists",
+                                    "ids",
+                                    "summary",
+                                    "fields",
+                                    "full"
+                                ],
+                                "description": "Extraction intent level"
+                            },
+                            "since": {
+                                "type": "integer",
+                                "description": "Only return changes since this Unix timestamp"
+                            },
+                            "token_budget": {
+                                "type": "integer",
+                                "description": "Maximum token budget for response"
+                            },
+                            "max_results": {
+                                "type": "integer",
+                                "default": 10,
+                                "description": "Maximum number of results"
+                            },
+                            "cursor": {
+                                "type": "string",
+                                "description": "Pagination cursor for next page"
+                            }
+                        },
+                        "required": [
+                            "operation"
+                        ]
+                    }),
             },
             ToolDefinition {
                 name: "reality_anchor".into(),
                 description: "Create and verify reality anchors for ground truth verification".into(),
                 input_schema: serde_json::json!({
-                    "type": "object",
-                    "properties": {
-                        "operation": { "type": "string" }
-                    },
-                    "required": ["operation"]
-                }),
+                        "type": "object",
+                        "properties": {
+                            "operation": {
+                                "type": "string"
+                            },
+                            "include_content": {
+                                "type": "boolean",
+                                "default": false,
+                                "description": "Return full content (default: IDs only)"
+                            },
+                            "intent": {
+                                "type": "string",
+                                "enum": [
+                                    "exists",
+                                    "ids",
+                                    "summary",
+                                    "fields",
+                                    "full"
+                                ],
+                                "description": "Extraction intent level"
+                            },
+                            "since": {
+                                "type": "integer",
+                                "description": "Only return changes since this Unix timestamp"
+                            },
+                            "token_budget": {
+                                "type": "integer",
+                                "description": "Maximum token budget for response"
+                            },
+                            "max_results": {
+                                "type": "integer",
+                                "default": 10,
+                                "description": "Maximum number of results"
+                            },
+                            "cursor": {
+                                "type": "string",
+                                "description": "Pagination cursor for next page"
+                            }
+                        },
+                        "required": [
+                            "operation"
+                        ]
+                    }),
             },
             ToolDefinition {
                 name: "reality_hallucination".into(),
                 description: "Detect and manage hallucination risks and unverified claims".into(),
                 input_schema: serde_json::json!({
-                    "type": "object",
-                    "properties": {
-                        "operation": { "type": "string" }
-                    },
-                    "required": ["operation"]
-                }),
+                        "type": "object",
+                        "properties": {
+                            "operation": {
+                                "type": "string"
+                            },
+                            "include_content": {
+                                "type": "boolean",
+                                "default": false,
+                                "description": "Return full content (default: IDs only)"
+                            },
+                            "intent": {
+                                "type": "string",
+                                "enum": [
+                                    "exists",
+                                    "ids",
+                                    "summary",
+                                    "fields",
+                                    "full"
+                                ],
+                                "description": "Extraction intent level"
+                            },
+                            "since": {
+                                "type": "integer",
+                                "description": "Only return changes since this Unix timestamp"
+                            },
+                            "token_budget": {
+                                "type": "integer",
+                                "description": "Maximum token budget for response"
+                            },
+                            "max_results": {
+                                "type": "integer",
+                                "default": 10,
+                                "description": "Maximum number of results"
+                            },
+                            "cursor": {
+                                "type": "string",
+                                "description": "Pagination cursor for next page"
+                            }
+                        },
+                        "required": [
+                            "operation"
+                        ]
+                    }),
             },
             ToolDefinition {
                 name: "reality_topology".into(),
                 description: "Map deployment topology including upstream, downstream, and siblings".into(),
                 input_schema: serde_json::json!({
-                    "type": "object",
-                    "properties": {
-                        "operation": { "type": "string" }
-                    },
-                    "required": ["operation"]
-                }),
+                        "type": "object",
+                        "properties": {
+                            "operation": {
+                                "type": "string"
+                            },
+                            "include_content": {
+                                "type": "boolean",
+                                "default": false,
+                                "description": "Return full content (default: IDs only)"
+                            },
+                            "intent": {
+                                "type": "string",
+                                "enum": [
+                                    "exists",
+                                    "ids",
+                                    "summary",
+                                    "fields",
+                                    "full"
+                                ],
+                                "description": "Extraction intent level"
+                            },
+                            "since": {
+                                "type": "integer",
+                                "description": "Only return changes since this Unix timestamp"
+                            },
+                            "token_budget": {
+                                "type": "integer",
+                                "description": "Maximum token budget for response"
+                            },
+                            "max_results": {
+                                "type": "integer",
+                                "default": 10,
+                                "description": "Maximum number of results"
+                            },
+                            "cursor": {
+                                "type": "string",
+                                "description": "Pagination cursor for next page"
+                            }
+                        },
+                        "required": [
+                            "operation"
+                        ]
+                    }),
             },
             ToolDefinition {
                 name: "reality_temporal".into(),
                 description: "Ground temporal awareness with causality tracking and timelines".into(),
                 input_schema: serde_json::json!({
-                    "type": "object",
-                    "properties": {
-                        "operation": { "type": "string" }
-                    },
-                    "required": ["operation"]
-                }),
+                        "type": "object",
+                        "properties": {
+                            "operation": {
+                                "type": "string"
+                            },
+                            "include_content": {
+                                "type": "boolean",
+                                "default": false,
+                                "description": "Return full content (default: IDs only)"
+                            },
+                            "intent": {
+                                "type": "string",
+                                "enum": [
+                                    "exists",
+                                    "ids",
+                                    "summary",
+                                    "fields",
+                                    "full"
+                                ],
+                                "description": "Extraction intent level"
+                            },
+                            "since": {
+                                "type": "integer",
+                                "description": "Only return changes since this Unix timestamp"
+                            },
+                            "token_budget": {
+                                "type": "integer",
+                                "description": "Maximum token budget for response"
+                            },
+                            "max_results": {
+                                "type": "integer",
+                                "default": 10,
+                                "description": "Maximum number of results"
+                            },
+                            "cursor": {
+                                "type": "string",
+                                "description": "Pagination cursor for next page"
+                            }
+                        },
+                        "required": [
+                            "operation"
+                        ]
+                    }),
             },
             ToolDefinition {
                 name: "reality_stakes".into(),
                 description: "Assess consequence awareness, risk fields, and blast radius".into(),
                 input_schema: serde_json::json!({
-                    "type": "object",
-                    "properties": {
-                        "operation": { "type": "string" }
-                    },
-                    "required": ["operation"]
-                }),
+                        "type": "object",
+                        "properties": {
+                            "operation": {
+                                "type": "string"
+                            },
+                            "include_content": {
+                                "type": "boolean",
+                                "default": false,
+                                "description": "Return full content (default: IDs only)"
+                            },
+                            "intent": {
+                                "type": "string",
+                                "enum": [
+                                    "exists",
+                                    "ids",
+                                    "summary",
+                                    "fields",
+                                    "full"
+                                ],
+                                "description": "Extraction intent level"
+                            },
+                            "since": {
+                                "type": "integer",
+                                "description": "Only return changes since this Unix timestamp"
+                            },
+                            "token_budget": {
+                                "type": "integer",
+                                "description": "Maximum token budget for response"
+                            },
+                            "max_results": {
+                                "type": "integer",
+                                "default": 10,
+                                "description": "Maximum number of results"
+                            },
+                            "cursor": {
+                                "type": "string",
+                                "description": "Pagination cursor for next page"
+                            }
+                        },
+                        "required": [
+                            "operation"
+                        ]
+                    }),
             },
             ToolDefinition {
                 name: "reality_coherence".into(),
                 description: "Maintain coherence across reality domains and manage transitions".into(),
                 input_schema: serde_json::json!({
-                    "type": "object",
-                    "properties": {
-                        "operation": { "type": "string" }
-                    },
-                    "required": ["operation"]
-                }),
+                        "type": "object",
+                        "properties": {
+                            "operation": {
+                                "type": "string"
+                            },
+                            "include_content": {
+                                "type": "boolean",
+                                "default": false,
+                                "description": "Return full content (default: IDs only)"
+                            },
+                            "intent": {
+                                "type": "string",
+                                "enum": [
+                                    "exists",
+                                    "ids",
+                                    "summary",
+                                    "fields",
+                                    "full"
+                                ],
+                                "description": "Extraction intent level"
+                            },
+                            "since": {
+                                "type": "integer",
+                                "description": "Only return changes since this Unix timestamp"
+                            },
+                            "token_budget": {
+                                "type": "integer",
+                                "description": "Maximum token budget for response"
+                            },
+                            "max_results": {
+                                "type": "integer",
+                                "default": 10,
+                                "description": "Maximum number of results"
+                            },
+                            "cursor": {
+                                "type": "string",
+                                "description": "Pagination cursor for next page"
+                            }
+                        },
+                        "required": [
+                            "operation"
+                        ]
+                    }),
             },
             ToolDefinition {
                 name: "reality_context".into(),
                 description: "Get a unified context summary across all reality domains".into(),
                 input_schema: serde_json::json!({
-                    "type": "object",
-                    "properties": {
-                        "operation": { "type": "string" }
-                    },
-                    "required": ["operation"]
-                }),
+                        "type": "object",
+                        "properties": {
+                            "operation": {
+                                "type": "string"
+                            },
+                            "include_content": {
+                                "type": "boolean",
+                                "default": false,
+                                "description": "Return full content (default: IDs only)"
+                            },
+                            "intent": {
+                                "type": "string",
+                                "enum": [
+                                    "exists",
+                                    "ids",
+                                    "summary",
+                                    "fields",
+                                    "full"
+                                ],
+                                "description": "Extraction intent level"
+                            },
+                            "since": {
+                                "type": "integer",
+                                "description": "Only return changes since this Unix timestamp"
+                            },
+                            "token_budget": {
+                                "type": "integer",
+                                "description": "Maximum token budget for response"
+                            },
+                            "max_results": {
+                                "type": "integer",
+                                "default": 10,
+                                "description": "Maximum number of results"
+                            },
+                            "cursor": {
+                                "type": "string",
+                                "description": "Pagination cursor for next page"
+                            }
+                        },
+                        "required": [
+                            "operation"
+                        ]
+                    }),
             },
             ToolDefinition {
                 name: "reality_ground".into(),
                 description: "Perform grounding operations to verify claims against reality anchors".into(),
                 input_schema: serde_json::json!({
-                    "type": "object",
-                    "properties": {
-                        "operation": { "type": "string" }
-                    },
-                    "required": ["operation"]
-                }),
+                        "type": "object",
+                        "properties": {
+                            "operation": {
+                                "type": "string"
+                            },
+                            "include_content": {
+                                "type": "boolean",
+                                "default": false,
+                                "description": "Return full content (default: IDs only)"
+                            },
+                            "intent": {
+                                "type": "string",
+                                "enum": [
+                                    "exists",
+                                    "ids",
+                                    "summary",
+                                    "fields",
+                                    "full"
+                                ],
+                                "description": "Extraction intent level"
+                            },
+                            "since": {
+                                "type": "integer",
+                                "description": "Only return changes since this Unix timestamp"
+                            },
+                            "token_budget": {
+                                "type": "integer",
+                                "description": "Maximum token budget for response"
+                            },
+                            "max_results": {
+                                "type": "integer",
+                                "default": 10,
+                                "description": "Maximum number of results"
+                            },
+                            "cursor": {
+                                "type": "string",
+                                "description": "Pagination cursor for next page"
+                            }
+                        },
+                        "required": [
+                            "operation"
+                        ]
+                    }),
             },
             ToolDefinition {
                 name: "reality_workspace".into(),
                 description: "Manage reality workspace files and persistence".into(),
                 input_schema: serde_json::json!({
-                    "type": "object",
-                    "properties": {
-                        "operation": { "type": "string" }
-                    },
-                    "required": ["operation"]
-                }),
+                        "type": "object",
+                        "properties": {
+                            "operation": {
+                                "type": "string"
+                            },
+                            "include_content": {
+                                "type": "boolean",
+                                "default": false,
+                                "description": "Return full content (default: IDs only)"
+                            },
+                            "intent": {
+                                "type": "string",
+                                "enum": [
+                                    "exists",
+                                    "ids",
+                                    "summary",
+                                    "fields",
+                                    "full"
+                                ],
+                                "description": "Extraction intent level"
+                            },
+                            "since": {
+                                "type": "integer",
+                                "description": "Only return changes since this Unix timestamp"
+                            },
+                            "token_budget": {
+                                "type": "integer",
+                                "description": "Maximum token budget for response"
+                            },
+                            "max_results": {
+                                "type": "integer",
+                                "default": 10,
+                                "description": "Maximum number of results"
+                            },
+                            "cursor": {
+                                "type": "string",
+                                "description": "Pagination cursor for next page"
+                            }
+                        },
+                        "required": [
+                            "operation"
+                        ]
+                    }),
             },
         ]
     }

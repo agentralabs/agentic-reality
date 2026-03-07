@@ -5,6 +5,7 @@
 //! Agentra Labs ecosystem.
 
 pub mod bridges;
+pub mod cache;
 #[cfg(feature = "cli")]
 pub mod cli;
 pub mod engine;
@@ -14,6 +15,8 @@ pub mod ffi;
 pub mod format;
 pub mod index;
 pub mod inventions;
+pub mod metrics;
+pub mod query;
 pub mod security;
 pub mod storage;
 pub mod types;
