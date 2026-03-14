@@ -7,6 +7,8 @@ use serde_json::Value;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
+use super::compact;
+
 /// MCP protocol handler.
 pub struct ProtocolHandler {
     session: Arc<Mutex<SessionManager>>,
@@ -76,7 +78,11 @@ impl ProtocolHandler {
     }
 
     async fn handle_list_tools(&self) -> Result<Value, McpError> {
-        let tools = ToolRegistry::list_tools();
+        let tools = if compact::is_compact_mode() {
+            compact::compact_tool_definitions()
+        } else {
+            ToolRegistry::list_tools()
+        };
         Ok(serde_json::json!({ "tools": tools }))
     }
 
@@ -89,7 +95,25 @@ impl ProtocolHandler {
                     message: "missing tool name".into(),
                 })?;
         let arguments = params.get("arguments").cloned();
-        ToolRegistry::call(name, arguments, &self.session).await
+
+        // Normalize compact facade calls to underlying tool names
+        let (tool_name, arguments) = if compact::is_compact_facade(name) {
+            match compact::normalize_compact_call(&name.to_string(), &arguments) {
+                Some((real_name, real_args)) => (real_name, real_args),
+                None => {
+                    return Err(McpError::InvalidParams {
+                        message: format!(
+                            "invalid operation for compact facade '{}'",
+                            name
+                        ),
+                    });
+                }
+            }
+        } else {
+            (name.to_string(), arguments)
+        };
+
+        ToolRegistry::call(&tool_name, arguments, &self.session).await
     }
 
     async fn handle_list_resources(&self) -> Result<Value, McpError> {

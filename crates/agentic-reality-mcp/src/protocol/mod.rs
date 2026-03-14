@@ -1,5 +1,6 @@
 //! MCP protocol handler — JSON-RPC message processing, negotiation, and validation.
 
+pub mod compact;
 pub mod handler;
 pub mod negotiation;
 pub mod validator;
