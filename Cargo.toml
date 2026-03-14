@@ -26,7 +26,7 @@ blake3 = "1.5"
 thiserror = "2"
 bincode = "1.3"
 agentic-sdk = "0.2.0"
-agentic-reality = { path = "crates/agentic-reality" }
-agentic-reality-mcp = { path = "crates/agentic-reality-mcp" }
-agentic-reality-cli = { path = "crates/agentic-reality-cli" }
-agentic-reality-ffi = { path = "crates/agentic-reality-ffi" }
+agentic-reality = { path = "crates/agentic-reality", version = "0.1.0" }
+agentic-reality-mcp = { path = "crates/agentic-reality-mcp", version = "0.1.0" }
+agentic-reality-cli = { path = "crates/agentic-reality-cli", version = "0.1.0" }
+agentic-reality-ffi = { path = "crates/agentic-reality-ffi", version = "0.1.0" }
